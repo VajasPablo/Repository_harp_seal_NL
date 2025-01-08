@@ -1,0 +1,11 @@
+# Packages utilisés
+packages <- c("tidyverse", "gridExtra", "knitr", "writexl", "openxlsx", 
+              "here", "scales", "DT", "ggpubr", "patchwork", 'raster', "sf", "marmap", "ggspatial")
+
+# Extraire uniquement les versions des packages utilisés
+package_versions <- installed.packages()[packages, c("Package", "Version")]
+package_versions_df <- as.data.frame(package_versions, stringsAsFactors = FALSE)
+
+# Écrire dans le README
+cat("## Packages utilisés avec leurs versions\n\n")
+apply(package_versions_df, 1, function(row) cat("*", row[1], ":", row[2], "\n"))

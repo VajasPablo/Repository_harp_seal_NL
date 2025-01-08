@@ -1,0 +1,1983 @@
+---
+title: "EwE 2020 2J3K (North part) - synthesis report"
+author: "Vajas Pablo"
+date: ' `r Sys.Date()` '
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    number_sections: true
+editor_options: 
+  chunk_output_type: console
+link-citations: true
+---
+```{r setup, include=FALSE, cache=FALSE}
+
+knitr::opts_chunk$set(
+    echo = FALSE,
+    include = FALSE,
+    fig.width = 12,
+    fig.height = 8,
+    fig.path = "R_figures_export/",
+    message = FALSE,
+    warning = FALSE,
+    dev = c("png", "pdf")
+)
+
+# options(device = "quartz")
+
+```
+
+```{r package}
+
+install_and_load_packages <- function() {
+  # List of packages to be installed and loaded
+  packages <- c("tidyverse", "gridExtra", "knitr", "writexl", "openxlsx", "here", "scales", "DT")
+  
+  # Function to install and load a package
+  install_and_load <- function(package_name) {
+    if (!requireNamespace(package_name, quietly = TRUE)) {
+      message(paste("Package", package_name, "is not installed. Installing..."))
+      install.packages(package_name, dependencies = TRUE)
+    }
+    message(paste("Loading package", package_name, "..."))
+    suppressMessages(library(package_name, character.only = TRUE))
+  }
+  
+  # Loop through the list of packages
+  for (pkg_name in packages) {
+    install_and_load(pkg_name)
+  }
+}
+
+# Call the function to install and load packages
+install_and_load_packages()
+
+```
+
+```{r source}
+
+sapply(list.files(here("R_script"), pattern="*.R", full.names=TRUE, ignore.case=TRUE),source,.GlobalEnv)
+
+```
+
+# Exploratory monospecific simulation
+
+## Simulation input description {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal
+
+```{r generate_F_exploratory_simulation_seal}
+
+simulation_generate_function(
+  simulation_names = paste0("Fseal_", seq(0,0.22, by = 0.02)), # first exploration in ecopath show a 100% depletion around this value
+  Weight = 1,   # Default value
+  Group_no = 5, # Groupe number of Harp seal in ecopath database
+  Type = 4,     # Fishing mortality change
+  time_step_start = 1, # start at year 1
+  nb_time_steps = 100, # run during 100 years
+  fill_value_min = F_Harp_seal_mortality, 
+  fill_value_max = seq(0,0.22, by = 0.02),
+  output_file = here(Harp_seal_input, "First_simulation", "Harp_seal_input_First_simulation.csv"))
+
+```
+
+* The table below shows the different F values of Fishing mortality for `Harp seal`. A preliminary investigation has shown that above the threshold value of F = 0.20, the collapse population. For this first exploration we propose the following values: 
+
+
+```{r harp_seal_first_simulation_quick_description_seal, include = TRUE, results = "asis"}
+
+datatable(data = data.frame("F (fishing mortality) value simulation" = paste0("Fseal_", seq(0, 0.22, by = 0.02))), filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+### Cod 
+
+```{r generate_F_exploratory_simulation_cod}
+
+simulation_generate_function(
+  simulation_names = paste0("Fcod_", seq(0,0.5, by = 0.05)), # first exploration in ecopath show a 100% depletion around this value
+  Weight = 1,   # Default value
+  Group_no = 12, # Groupe number of cod in ecopath database
+  Type = 4,     # Fishing mortality change
+  time_step_start = 1, # start at year 1
+  nb_time_steps = 100, # run during 100 years
+  fill_value_min = F_Cod_mortality, 
+  fill_value_max = seq(0,0.5, by = 0.05),
+  output_file = here(Cod_input, "First_simulation", "Cod_input_First_simulation.csv"))
+
+```
+
+* The table below shows the different F values of Fishing mortality for `Cod`. A preliminary investigation has shown that above the threshold value of F = 0.5, the collapse population. For this first exploration we propose the following values: 
+
+```{r harp_seal_first_simulation_quick_description_cod, include = TRUE, results = "asis"}
+
+datatable(data = data.frame("F (fishing mortality) value simulation" = paste0("Fcod_", seq(0,0.5, by = 0.05))), filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+### Capelin 
+
+```{r generate_F_exploratory_simulation_capelin}
+
+simulation_generate_function(
+  simulation_names = paste0("Fcapelin_", seq(0,0.7, by = 0.05)), # first exploration in ecopath show a 100% depletion around this value
+  Weight = 1,   # Default value
+  Group_no = 28, # Groupe number of capelin in ecopath database
+  Type = 4,     # Fishing mortality change
+  time_step_start = 1, # start at year 1
+  nb_time_steps = 100, # run during 100 years
+  fill_value_min = F_Capelin_mortality, 
+  fill_value_max = seq(0,0.7, by = 0.05),
+  output_file = here(Capelin_input, "First_simulation", "Capelin_input_First_simulation.csv"))
+
+```
+
+* The table below shows the different F values of Fishing mortality for `Capelin`. A preliminary investigation has shown that above the threshold value of F = 0.7, the collapse population. For this first exploration we propose the following values: 
+
+```{r harp_seal_first_simulation_quick_description_capelin, include = TRUE, results = "asis"}
+
+datatable(data = data.frame("F (fishing mortality) value simulation" = paste0("Fcapelin_", seq(0, 0.7, by = 0.05))), filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+## Level of Depletion estimation {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal 
+
+```{r import_seal_first_simulation}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Fseal", 
+                                      species_long = "Harp_seal", 
+                                      wich_simulation = "first",
+                                      F_vector = seq(0, 0.22, by = 0.02),
+                                      print = FALSE)
+
+```
+
+```{r First_LoD_harp_seal_figures, include=TRUE}
+
+LoD_check_plot_approx(data = Df_merged_Fseal_biomass_first,
+               observed_biomass = Biomass_Harp_Seal,
+               Fspecies = "Fseal",
+               species = "Harp seal",
+               species_chrc = "harp_seal", 
+               Group_number_specific = 5)
+
+```
+
+```{r First_LoD_harp_seal_table, include = TRUE, results = "asis"}
+
+datatable(data = Df_LoD_fixed_harp_seal, filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+### Cod
+
+```{r import_cod_first_simulation}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Fcod", 
+                                      species_long = "Cod", 
+                                      wich_simulation = "first",
+                                      F_vector = seq(0,0.5, by = 0.05),
+                                      print = FALSE)
+
+```
+
+```{r create_group_50_for_merged_cod_life_stage}
+
+Df_merged_Fcod_biomass_first  <- Df_merged_Fcod_biomass_first %>%
+  mutate(across(starts_with("biomass"), as.numeric)) %>%
+  filter(Group_number %in% c(12, 13)) %>%
+  mutate(
+    across(starts_with("biomass"), ~ sum(.)),
+    Group_number = 43,
+    Group_name = "Cod"
+  ) %>%
+  slice(1) %>%
+  rbind.data.frame(Df_merged_Fcod_biomass_first) %>%
+  arrange(Group_number)
+
+```
+
+```{r First_LoD_cod_figures, include=TRUE}
+
+LoD_check_plot_approx(data = Df_merged_Fcod_biomass_first,
+               observed_biomass = Biomass_cod,
+               Fspecies = "Fcod",
+               species = "Cod",
+               species_chrc = "cod", 
+               Group_number_specific = 43)
+
+```
+
+```{r First_LoD_cod_table, include = TRUE, results = "asis"}
+
+datatable(data = Df_LoD_fixed_cod, filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+### Capelin
+
+```{r import_capelin_first_simulation}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Fcapelin", 
+                                      species_long = "Capelin", 
+                                      wich_simulation = "first",
+                                      F_vector = seq(0, 0.7, by = 0.05),
+                                      print = FALSE)
+
+```
+
+```{r First_LoD_capelin_figures, include=TRUE}
+
+LoD_check_plot_approx(data = Df_merged_Fcapelin_biomass_first,
+              observed_biomass = Biomass_Capelin,
+               Fspecies = "Fcapelin",
+               species = "Capelin",
+               species_chrc = "capelin", 
+               Group_number_specific = 28)
+
+```
+
+```{r First_LoD_capelin_table, include = TRUE, results = "asis"}
+
+datatable(data = Df_LoD_fixed_capelin, filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+# Selected monospecific simulation
+
+## Simulation input & Fixed LoD check {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal 
+
+```{r generate_F_final_simulation_Fseal}
+
+simulation_generate_function(
+  simulation_names = paste0("Fseal_", Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()), 
+  Weight = 1,   
+  Group_no = 5,
+  Type = 4,     
+  time_step_start = 1, 
+  nb_time_steps = 100, 
+  fill_value_min = F_Harp_seal_mortality, 
+  fill_value_max = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+  output_file = here(Harp_seal_input, "Final_simulation", "Harp_seal_input_Final_simulation.csv"))
+
+```
+
+```{r import_final_simulation_Fseal}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Fseal", 
+                                      species_long = "Harp_seal", 
+                                      wich_simulation = "final",
+                                      F_vector = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                                      digit_import_value = 8,
+                                      print = FALSE)
+
+```
+
+```{r import_final_simulation_catch_Fseal}
+
+import_transformation_output_function(input_select = "catch", 
+                                      species_short = "Fseal", 
+                                      species_long = "Harp_seal", 
+                                      wich_simulation = "final",
+                                      F_vector = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                                      digit_import_value = 8,
+                                      print = FALSE)
+
+```
+
+```{r plot_new_LoD_check_Fseal, include=TRUE}
+
+LoD_check_plot(data = Df_merged_Fseal_biomass_final, 
+               observed_biomass = Biomass_Harp_Seal, 
+               Fspecies = "Fseal",
+               digit_import_value = 8,
+               species = "Harp Seal", 
+               Group_number_specific = 5)
+
+```
+
+```{r export_Df_merged_Fseal_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_Fseal_biomass_final, file = here("Rds_export_adapted_data", "seal_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_Fseal_catch_final, file = here("Rds_export_adapted_data", "seal_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+### Cod
+
+```{r generate_F_final_simulation_Fcod}
+
+simulation_generate_function(
+  simulation_names = paste0("Fcod_", Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()), 
+  Weight = 1,   
+  Group_no = 12,
+  Type = 4,     
+  time_step_start = 1, 
+  nb_time_steps = 100, 
+  fill_value_min = F_Cod_mortality, 
+  fill_value_max = Df_LoD_fixed_cod %>% filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+  output_file = here(Cod_input, "Final_simulation", "Cod_input_Final_simulation.csv"))
+
+```
+
+```{r import_final_simulation_Fcod}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Fcod", 
+                                      species_long = "Cod", 
+                                      wich_simulation = "final",
+                                      F_vector = Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                                      digit_import_value = 7, 
+                                      print = FALSE)
+
+```
+
+```{r import_final_simulation_catch_Fcod}
+
+import_transformation_output_function(input_select = "catch", 
+                                      species_short = "Fcod", 
+                                      species_long = "Cod", 
+                                      wich_simulation = "final",
+                                      F_vector = Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                                      digit_import_value = 7,
+                                      print = FALSE)
+
+```
+
+```{r create_group_50_for_merged_cod_life_stage_final}
+
+Df_merged_Fcod_biomass_final  <- Df_merged_Fcod_biomass_final %>%
+  mutate(across(starts_with("biomass"), as.numeric)) %>%
+  filter(Group_number %in% c(12, 13)) %>%
+  mutate(
+    across(starts_with("biomass"), ~ sum(.)),
+    Group_number = 43,
+    Group_name = "Cod"
+  ) %>%
+  slice(1) %>%
+  rbind.data.frame(Df_merged_Fcod_biomass_final) %>%
+  arrange(Group_number)
+
+```
+
+```{r plot_new_LoD_check_Fcod, include=TRUE}
+
+LoD_check_plot(data = Df_merged_Fcod_biomass_final, 
+               observed_biomass = Biomass_cod, 
+               Fspecies = "Fcod",
+               digit_import_value = 7,
+               species = "Cod", 
+               Group_number_specific = 43)
+
+```
+
+```{r export_Df_merged_Fcod_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_Fcod_biomass_final, file = here("Rds_export_adapted_data", "cod_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_Fcod_catch_final, file = here("Rds_export_adapted_data", "cod_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+### Capelin
+
+```{r generate_F_final_simulation_Fcapelin}
+
+simulation_generate_function(
+  simulation_names = paste0("Fcapelin_", Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()),
+  Weight = 1,   
+  Group_no = 28,
+  Type = 4,     
+  time_step_start = 1, 
+  nb_time_steps = 100, 
+  fill_value_min = F_Capelin_mortality, 
+  fill_value_max = Df_LoD_fixed_capelin %>% filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+  output_file = here(Capelin_input, "Final_simulation", "Capelin_input_Final_simulation.csv"))
+
+```
+
+```{r import_final_simulation_Fcapelin}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Fcapelin", 
+                                      species_long = "Capelin", 
+                                      wich_simulation = "final",
+                                      F_vector = Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                                      digit_import_value = 7, 
+                                      print = FALSE)
+
+```
+
+```{r import_final_simulation_catch_Fcapelin}
+
+import_transformation_output_function(input_select = "catch", 
+                                      species_short = "Fcapelin", 
+                                      species_long = "Capelin", 
+                                      wich_simulation = "final",
+                                      F_vector = Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                                      digit_import_value = 7,
+                                      print = FALSE)
+
+```
+
+```{r plot_new_LoD_check_Fcapelin, include=TRUE}
+
+LoD_check_plot(data = Df_merged_Fcapelin_biomass_final, 
+               observed_biomass = Biomass_Capelin, 
+               Fspecies = "Fcapelin",
+               digit_import_value = 7,
+               species = "Capelin", 
+               Group_number_specific = 28)
+
+```
+
+```{r export_Df_merged_Fcapelin_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_Fcapelin_biomass_final, file = here("Rds_export_adapted_data", "capelin_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_Fcapelin_catch_final, file = here("Rds_export_adapted_data", "capelin_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+## Percentage of groups impacted by at least 20% & 40% change {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal 
+
+```{r groups_impacted_calculation_harp_seal}
+
+calculate_impact_summary(LoD_rename = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99), 
+                         F_data = Df_merged_Fseal_biomass_final, 
+                         species_unselect = 5, 
+                         species = "Harp seal", 
+                         total_number_group = EwE_number_group-1, #-harp seal
+                         species_short = "harp_seal")
+
+```
+
+```{r groups_impacted_calculation_harp_seal_t20, include=TRUE, results='asis'}
+
+DT_tables_harp_seal$T20
+
+```
+
+```{r groups_impacted_calculation_harp_seal_t40, include=TRUE, results='asis'}
+
+DT_tables_harp_seal$T40
+
+```
+
+### Cod 
+
+```{r groups_impacted_calculation_cod}
+
+calculate_impact_summary(LoD_rename = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99), 
+                         F_data = Df_merged_Fcod_biomass_final, 
+                         species_unselect = c(12, 13, 43), 
+                         species = "Cod", 
+                         total_number_group = EwE_number_group-3, #- cod, cod>30 and cod<30
+                         species_short = "cod")
+
+```
+
+```{r groups_impacted_calculation_cod_t20, include=TRUE, results='asis'}
+
+DT_tables_cod$T20
+
+```
+
+```{r groups_impacted_calculation_cod_t40, include=TRUE, results='asis'}
+
+DT_tables_cod$T40
+
+```
+
+### Capelin 
+
+```{r groups_impacted_calculation_capelin}
+
+calculate_impact_summary(LoD_rename = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99), 
+                         F_data = Df_merged_Fcapelin_biomass_final, 
+                         species_unselect = 28, 
+                         species = "Capelin", 
+                         total_number_group = EwE_number_group-1, #- capelin
+                         species_short = "capelin")
+
+```
+
+```{r groups_impacted_calculation_capelin_t20, include=TRUE, results='asis'}
+
+DT_tables_capelin$T20
+
+```
+
+```{r groups_impacted_calculation_capelin_t40, include=TRUE, results='asis'}
+
+DT_tables_capelin$T40
+
+```
+
+## Summary table of percentage change {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal
+
+```{r Large_table_group_impacted_seal, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_harp_seal_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Harp Seal: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Cod 
+
+```{r Large_table_group_impacted_cod, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_cod_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Cod: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Capelin 
+
+```{r Large_table_group_impacted_capelin, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_capelin_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Capelin: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Summary heatmap of percentage change
+
+```{r final_summary_heatmap, include=TRUE}
+
+summary_heatmap_funtion(data_sp_seal = Df_impacted_harp_seal_large_table,
+                             sp_seal = "Seal Harp",
+                             nb_row_spseal_1 = 4,
+                             nb_row_spseal_2 = 5,
+                             data_sp_cod = Df_impacted_cod_large_table,
+                             sp_cod_1 = "Cod> 35 cm",
+                             sp_cod_2 = "Cod<= 35 cm",
+                             nb_row_spcod_1 = 11,
+                             nb_row_spcod_2 = 12,
+                             data_sp_capelin = Df_impacted_capelin_large_table,
+                             sp_capelin = "Capelin",
+                             nb_row_spcapelin_1 = 27,
+                             nb_row_spcapelin_2 = 28)
+
+```
+
+## Key figure : % groups impacted change according to LoD change & MSY illustration {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal
+
+```{r key_figure_seal, include=TRUE}
+
+key_fig_function(catch_data = Df_merged_Fseal_catch_final, 
+                 Group_number_specific= 5,
+                 data_20 = Df_impacted_harp_seal_table_20,
+                 data_40 = Df_impacted_harp_seal_table_40,
+                 obs_lod_data = observed_LoD_Fseal,
+                 x_axis_species = "Harp seal",
+                 name_species_rds = "seal")
+
+```
+
+```{r key_figure_fseal_weeb, include=TRUE}
+
+key_fig_function_LoD_web(
+                 data_20 = Df_impacted_harp_seal_table_20,
+                 data_40 = Df_impacted_harp_seal_table_40,
+                 obs_LoD_data = observed_LoD_Fseal,
+                 x_axis_species = "Harp Seal",
+                 name_species_rds = "seal")
+
+```
+
+### Cod
+
+```{r key_figure_cod, include=TRUE}
+
+key_fig_function(catch_data = Df_merged_Fcod_catch_final, 
+                 Group_number_specific= 12,
+                 data_20 = Df_impacted_cod_table_20,
+                 data_40 = Df_impacted_cod_table_40,
+                 obs_lod_data = observed_LoD_Fcod,
+                 x_axis_species = "Cod",
+                 name_species_rds = "cod")
+
+```
+
+```{r key_figure_fcod_weeb, include=TRUE}
+
+key_fig_function_LoD_web(
+                 data_20 = Df_impacted_cod_table_20,
+                 data_40 = Df_impacted_cod_table_40,
+                 obs_LoD_data = observed_LoD_Fcod,
+                 x_axis_species = "Cod",
+                 name_species_rds = "cod")
+
+```
+
+### Capelin
+
+```{r key_figure_capelin, include=TRUE}
+
+key_fig_function(catch_data = Df_merged_Fcapelin_catch_final, 
+                 Group_number_specific= 28,
+                 data_20 = Df_impacted_capelin_table_20,
+                 data_40 = Df_impacted_capelin_table_40,
+                 obs_lod_data = observed_LoD_Fcapelin,
+                 x_axis_species = "Capelin", 
+                 name_species_rds = "capelin")
+
+```
+
+```{r key_figure_fcapelin_weeb, include=TRUE}
+
+key_fig_function_LoD_web(
+                 data_20 = Df_impacted_capelin_table_20,
+                 data_40 = Df_impacted_capelin_table_40,
+                 obs_LoD_data = observed_LoD_Fcapelin,
+                 x_axis_species = "Capelin", 
+                 name_species_rds = "capelin")
+
+```
+
+# Exploratory other species groups function 
+
+## Harp seal {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Biomass relative change
+
+```{r biomass_relative_change_function_seal, include=TRUE}
+
+heatmap_monospe_relative_biomass(data = Df_merged_Fseal_biomass_final,
+                                      species_name = "Harp Seal")
+
+```
+
+### Catch relative change
+
+```{r catch_relative_change_function_seal, include=TRUE}
+
+heatmap_monospe_relative_catch(data = Df_merged_Fseal_catch_final,
+                                    species_name = "Harp Seal")
+
+```
+
+## Cod {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Biomass relative change
+
+```{r biomass_relative_change_function_cod, include=TRUE}
+
+heatmap_monospe_relative_biomass(data = Df_merged_Fcod_biomass_final,
+                                    species_name = "Cod")
+
+```
+
+### Catch relative change
+
+```{r catch_relative_change_function_cod, include=TRUE}
+
+heatmap_monospe_relative_catch(data = Df_merged_Fcod_catch_final,
+                                    species_name = "Cod")
+
+```
+
+## Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Biomass relative change
+
+```{r biomass_relative_change_function_capelin, include=TRUE}
+
+heatmap_monospe_relative_biomass(data = Df_merged_Fcapelin_biomass_final,
+                                    species_name = "Capelin")
+
+```
+
+### Catch relative change
+
+```{r catch_relative_change_function_capelin, include=TRUE}
+
+heatmap_monospe_relative_catch(data = Df_merged_Fcapelin_catch_final,
+                                    species_name = "Capelin")
+
+```
+
+# Selected multispecific simulation
+
+## Simulation input description: Harp seal x Cod {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Input table description
+
+```{r combined_simulation_generate_SEALxCOD}
+
+combined_simulation_generate_function(
+  simulation_names = c(paste0("Fseal_", Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()), 
+                       paste0("Fcod_", Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist())), 
+  Weight = 1,   
+  Group_no = c(rep(5, 5),rep(12, 5)),
+  Type = 4,     
+  time_step_start = 1, 
+  nb_time_steps = 100, 
+  fill_value_min = c(rep(F_Harp_seal_mortality, 5),rep(F_Cod_mortality, 5)), 
+  fill_value_max = c(Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                     Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()),
+  output_file = here(Harp_seal_versus_cod_input, "Final_simulation", "Harp_seal_versus_cod_input_simulation.csv"),
+  species_1 = "seal",
+  species_1_number = "5",
+  F_species_1 = F_Harp_seal_mortality,
+  species_2 = "cod",
+  species_2_number = "12",
+  F_species_2 = F_Cod_mortality,
+  order_colonnes = c(1,2,12,3,4,5,6,7,13,8,9,10,11)
+  )
+
+```
+
+
+```{r combined_import_generate_biomass_SEALxCOD}
+
+import_combined_transformation_output_function(input_select = "biomass", 
+                                                species_short = "seal", 
+                                                species_short_2 = "cod", 
+                                                folder = "Harp_seal_versus_Cod", 
+                                                wich_simulation = "final", 
+                                                F_vector = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                                F_vector_2 = Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                       obs_F_vector = F_Harp_seal_mortality,
+                                       obs_F_vector_2 = F_Cod_mortality,
+                                                digit_import_value = 8, 
+                                                digit_import_value_2 = 7,
+                                       LoD_vector_name= c("obs", "0", "25", "50", "75", "99"),
+                                       change_name_for_LoD = TRUE,
+                                                print = TRUE)
+
+```
+
+```{r combined_import_generate_catch_SEALxCOD}
+
+import_combined_transformation_output_function(input_select = "catch", 
+                                                species_short = "seal", 
+                                                species_short_2 = "cod", 
+                                                folder = "Harp_seal_versus_Cod", 
+                                                wich_simulation = "final", 
+                                                F_vector = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                                F_vector_2 = Df_LoD_fixed_cod %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                       obs_F_vector = F_Harp_seal_mortality,
+                                       obs_F_vector_2 = F_Cod_mortality,
+                                                digit_import_value = 8, 
+                                                digit_import_value_2 = 7,
+                                       LoD_vector_name= c("obs", "0", "25", "50", "75", "99"),
+                                       change_name_for_LoD = TRUE,
+                                                print = TRUE)
+
+```
+
+```{r save_rds_SEALxCOD}
+
+saveRDS(Df_merged_seal_vs_cod_biomass_final, file = here("Rds_export_adapted_data", "Df_merged_seal_vs_cod_biomass_final_EwE_2020_2J3K.rds"))
+ 
+```
+
+```{r summary_combined_import_generate_SEALxCOD, include=TRUE, results='asis'}
+
+table_combi_function(data = Df_merged_seal_vs_cod_biomass_final,
+                     species_col = "Cod",
+                     species_row = "Harp Seal")
+
+```
+
+```{r export_Df_merged_seal_vs_cod_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_seal_vs_cod_biomass_final, file = here("Rds_export_adapted_data", "seal_cod_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_seal_vs_cod_catch_final, file = here("Rds_export_adapted_data", "seal_cod_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+## Combined simulation: Harp seal x Cod {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Heatmap of Biomass & LoD : Cod
+
+```{r heatmap_biomass_lod_sealxcod_cod, include=TRUE}
+
+heatmap_multispecific_biomass_LoD_function(data = Df_merged_seal_vs_cod_biomass_final,
+                                           species_number = c(12, 13),
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "cod", 
+                                           species_one = "seal",
+                                           species_two = "cod")
+
+```
+
+### Heatmap of Biomass & LoD : Harp seal
+
+```{r heatmap_biomass_lod_sealxcod_seal, include=TRUE}
+
+heatmap_multispecific_biomass_LoD_function(data = Df_merged_seal_vs_cod_biomass_final,
+                                           species_number = 5,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "cod", 
+                                           species_one = "cod",
+                                           species_two = "seal")
+
+```
+
+### Table of groups impacted by 20% & 40% of change
+
+```{r summary_multispecific_seal_cod_20, include = TRUE}
+
+calculate_impact_summary_multispecific(
+                         F_data = Df_merged_seal_vs_cod_biomass_final, 
+                         species_unselect = c(12, 13, 5), 
+                         species_1 = "seal",
+                         species_2 = "cod", 
+                         total_number_group = EwE_number_group-3,
+                         species_short = "harp_seal_vs_cod")
+
+```
+
+```{r summary_multispecific_seal_cod_20_dttable, include = TRUE, results='asis'}
+
+DT_tables_harp_seal_vs_cod$T20
+
+```
+
+```{r summary_multispecific_seal_cod_40_dttable, include = TRUE, results='asis'}
+
+DT_tables_harp_seal_vs_cod$T40
+
+```
+
+### Heatmap of groups impacted by 20% of change
+
+```{r heatmap_multispecific_group_impacted_seal_cod_20, include=TRUE}
+
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "cod", 
+                                           species_one = "seal",
+                                           species_two = "cod",
+                                           percent = "20%")
+
+```
+
+
+### Heatmap of groups impacted by 40% of change
+
+```{r heatmap_multispecific_group_impacted_seal_cod_40, include=TRUE}
+
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_40,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "cod", 
+                                           species_one = "seal",
+                                           species_two = "cod",
+                                           percent = "40%")
+
+```
+
+### Summary Table of percentage change
+
+```{r Large_table_group_impacted_sealvcod, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_harp_seal_vs_cod_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Harp seal verus cod simulations: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Summary heatmap of percentage change
+
+```{r final_summary_heatmap_sealxcod, include=TRUE}
+
+summary_heatmap_funtion_multi(Df_impacted_harp_seal_vs_cod_large_table, "seal", "cod")
+
+```
+
+## Simulation input description: Harp seal x Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Input table description
+
+```{r combined_simulation_generate_SEALxCAPELIN}
+
+combined_simulation_generate_function(
+  simulation_names = c(paste0("Fseal_", Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()), 
+                       paste0("Fcapelin_", Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist())), 
+  Weight = 1,   
+  Group_no = c(rep(5, 5),rep(28, 5)),
+  Type = 4,     
+  time_step_start = 1, 
+  nb_time_steps = 100, 
+  fill_value_min = c(rep(F_Harp_seal_mortality, 5),rep(F_Capelin_mortality, 5)), 
+  fill_value_max = c(Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist(),
+                     Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                        unlist()),
+  output_file = here(Harp_seal_versus_capelin_input, "Final_simulation", "Harp_seal_versus_capelin_input_simulation.csv"),
+  species_1 = "seal",
+  species_1_number = "5",
+  F_species_1 = F_Harp_seal_mortality,
+  species_2 = "capelin",
+  species_2_number = "28",
+  F_species_2 = F_Capelin_mortality,
+  order_colonnes = c(1,2,12,3,4,5,6,7,13,8,9,10,11)
+  )
+
+```
+
+```{r combined_import_generate_biomass_SEALxCAPELIN}
+
+import_combined_transformation_output_function(input_select = "biomass", 
+                                                species_short = "seal", 
+                                                species_short_2 = "capelin", 
+                                                folder = "Harp_seal_versus_Capelin", 
+                                                wich_simulation = "final", 
+                                                F_vector = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                                F_vector_2 = Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                       obs_F_vector = F_Harp_seal_mortality,
+                                       obs_F_vector_2 = F_Capelin_mortality,
+                                                digit_import_value = 8, 
+                                                digit_import_value_2 = 7,
+                                       LoD_vector_name= c("obs", "0", "25", "50", "75", "99"),
+                                       change_name_for_LoD = TRUE,
+                                                print = TRUE)
+
+```
+
+```{r combined_import_generate_catch_SEALxCAPELIN}
+
+import_combined_transformation_output_function(input_select = "catch", 
+                                                species_short = "seal", 
+                                                species_short_2 = "capelin", 
+                                                folder = "Harp_seal_versus_Capelin", 
+                                                wich_simulation = "final", 
+                                                F_vector = Df_LoD_fixed_harp_seal %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                                F_vector_2 = Df_LoD_fixed_capelin %>% 
+                                        filter(Fixed_LoD %in% c(0, 25, 50, 75, 99)) %>%
+                                        select(F_mortality_interpolated) %>%
+                                         unlist() %>% 
+                                         unname(),
+                                       obs_F_vector = F_Harp_seal_mortality,
+                                       obs_F_vector_2 = F_Capelin_mortality,
+                                                digit_import_value = 8, 
+                                                digit_import_value_2 = 7,
+                                       LoD_vector_name= c("obs", "0", "25", "50", "75", "99"),
+                                       change_name_for_LoD = TRUE,
+                                                print = TRUE)
+
+```
+
+```{r save_rds_SEALxCAPELIN}
+
+saveRDS(Df_merged_seal_vs_capelin_biomass_final, file = here("Rds_export_adapted_data", "Df_merged_seal_vs_capelin_biomass_final_EwE_2020_2J3K.rds"))
+ 
+```
+
+```{r summary_combined_import_generate_SEALxCAPELIN, include=TRUE, results='asis'}
+
+table_combi_function(data = Df_merged_seal_vs_capelin_biomass_final,
+                     species_col = "Capelin",
+                     species_row = "Harp Seal")
+
+```
+
+```{r export_Df_merged_seal_vs_capelin_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_seal_vs_capelin_biomass_final, file = here("Rds_export_adapted_data", "seal_capelin_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_seal_vs_capelin_catch_final, file = here("Rds_export_adapted_data", "seal_capelin_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+## Combined simulation: Harp seal x Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Heatmap of Biomass & LoD : Capelin
+
+```{r heatmap_biomass_lod_sealxcapelin_capelin, include=TRUE}
+
+heatmap_multispecific_biomass_LoD_function(data = Df_merged_seal_vs_capelin_biomass_final,
+                                           species_number = 28,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "capelin", 
+                                           species_one = "seal",
+                                           species_two = "capelin")
+
+```
+
+### Heatmap of Biomass & LoD : Harp seal
+
+```{r heatmap_biomass_lod_sealxcapelin_seal, include=TRUE}
+
+heatmap_multispecific_biomass_LoD_function(data = Df_merged_seal_vs_capelin_biomass_final,
+                                           species_number = 5,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "capelin", 
+                                           species_one = "capelin",
+                                           species_two = "seal")
+
+```
+
+### Table of groups impacted by 20% & 40% of change
+
+```{r summary_multispecific_seal_capelin_20, include = TRUE}
+
+calculate_impact_summary_multispecific(
+                         F_data = Df_merged_seal_vs_capelin_biomass_final, 
+                         species_unselect = c(5, 28), 
+                         species_1 = "seal",
+                         species_2 = "capelin",
+                         total_number_group = EwE_number_group-2,
+                         species_short = "harp_seal_vs_capelin")
+
+```
+
+```{r summary_multispecific_seal_capelin_20_dttable, include = TRUE, results='asis'}
+
+DT_tables_harp_seal_vs_capelin$T20
+
+```
+
+```{r summary_multispecific_seal_capelin_40_dttable, include = TRUE, results='asis'}
+
+DT_tables_harp_seal_vs_capelin$T40
+
+```
+
+### Heatmap of groups impacted by 20% of change
+
+```{r heatmap_multispecific_group_impacted_seal_capelin_20, include=TRUE}
+
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_capelin_table_20,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "capelin", 
+                                           species_one = "seal",
+                                           species_two = "capelin",
+                                           percent = "20%")
+
+```
+
+### Heatmap of groups impacted by 40% of change
+
+```{r heatmap_multispecific_group_impacted_seal_capelin_40, include=TRUE}
+
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_capelin_table_40,
+                                           species_one_fixe = "seal", 
+                                           species_two_fixe = "capelin", 
+                                           species_one = "seal",
+                                           species_two = "capelin",
+                                           percent = "40%")
+
+```
+
+### Summary Table of percentage change
+
+```{r Large_table_group_impacted_seal_capelin, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_harp_seal_vs_capelin_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Harp seal verus cod simulations: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Summary heatmap of percentage change
+
+```{r final_summary_heatmap_sealxcapelin, include=TRUE}
+
+summary_heatmap_funtion_multi(Df_impacted_harp_seal_vs_capelin_large_table, "seal", "capelin")
+
+```
+
+# Exploratory other species groups function: Harp seal x cod simulation
+
+## Per Biomass {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+```{r knit_loop_seal_cod_biomass}
+
+# Create a list to store Rmarkdown code chunks for each species
+plots_species_seal_vs_cod_biomass <- list()
+
+# Iterate over each species
+for (i in seq_along(unique(Df_merged_seal_vs_cod_biomass_final$Group_name))) {
+  species <- unique(Df_merged_seal_vs_cod_biomass_final$Group_name)[i]
+    code <- paste0(
+    "### ", species, " {.tabset}\n\n",
+    "```{r heatmap_seal_cod_species_biomass_", i, ", include=TRUE} \n",
+    "create_heatmap_multispe_biomass(data = Df_merged_seal_vs_cod_biomass_final, SPECIE_NAME = '", species, "', species_one_fixe = 'seal', species_two_fixe = 'cod', species_one = 'seal', species_two = 'cod')\n",
+    "```\n\n\n"
+  )
+    
+  plots_species_seal_vs_cod_biomass[[species]] <- unlist(code)
+}
+
+```
+
+`r knit(text = unlist(plots_species_seal_vs_cod_biomass))`
+
+## Per Catch {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+```{r knit_loop_seal_cod_catch}
+
+Df_merged_seal_vs_cod_catch_final <- Df_merged_seal_vs_cod_catch_final %>%
+  mutate_at(vars(starts_with("catch")), as.numeric) %>%
+  filter(rowSums(select(., starts_with("catch")), na.rm = TRUE) > 0) 
+
+# Create a list to store Rmarkdown code chunks for each species
+plots_species_seal_vs_cod_catch <- list()
+
+# Iterate over each species
+for (i in seq_along(unique(Df_merged_seal_vs_cod_catch_final$Group_name))) {
+  species <- unique(Df_merged_seal_vs_cod_catch_final$Group_name)[i]
+    code <- paste0(
+    "### ", species, " {.tabset}\n\n",
+    "```{r heatmap_seal_cod_species_catch_", i, ", include=TRUE} \n",
+    "create_heatmap_multispe_catch(data = Df_merged_seal_vs_cod_catch_final, SPECIE_NAME = '", species, "', species_one_fixe = 'seal', species_two_fixe = 'cod', species_one = 'seal', species_two = 'cod')\n",
+    "```\n\n\n"
+  )
+    
+  plots_species_seal_vs_cod_catch[[species]] <- unlist(code)
+}
+
+```
+
+`r knit(text = unlist(plots_species_seal_vs_cod_catch))`
+
+# Exploratory other species groups function: Harp seal x Capelin simulation
+
+## Per Biomass {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+```{r knit_loop_seal_capelin_biomass}
+
+# Create a list to store Rmarkdown code chunks for each species
+plots_species_seal_vs_capelin_biomass <- list()
+
+# Iterate over each species
+for (i in seq_along(unique(Df_merged_seal_vs_capelin_biomass_final$Group_name))) {
+  species <- unique(Df_merged_seal_vs_capelin_biomass_final$Group_name)[i]
+    code <- paste0(
+    "### ", species, " {.tabset}\n\n",
+    "```{r heatmap_seal_capelin_species_biomass_", i, ", include=TRUE} \n",
+    "create_heatmap_multispe_biomass(data = Df_merged_seal_vs_capelin_biomass_final, SPECIE_NAME = '", species, "', species_one_fixe = 'seal', species_two_fixe = 'capelin', species_one = 'seal', species_two = 'capelin')\n",
+    "```\n\n\n"
+  )
+    
+  plots_species_seal_vs_capelin_biomass[[species]] <- unlist(code)
+}
+
+```
+
+`r knit(text = unlist(plots_species_seal_vs_capelin_biomass))`
+
+## Per Catch {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+```{r knit_loop_seal_capelin_catch}
+
+Df_merged_seal_vs_capelin_catch_final <- Df_merged_seal_vs_capelin_catch_final %>%
+  mutate_at(vars(starts_with("catch")), as.numeric) %>%
+  filter(rowSums(select(., starts_with("catch")), na.rm = TRUE) > 0) 
+
+# Create a list to store Rmarkdown code chunks for each species
+plots_species_seal_vs_capelin_catch <- list()
+
+# Iterate over each species
+for (i in seq_along(unique(Df_merged_seal_vs_capelin_catch_final$Group_name))) {
+  species <- unique(Df_merged_seal_vs_capelin_catch_final$Group_name)[i]
+    code <- paste0(
+    "### ", species, " {.tabset}\n\n",
+    "```{r heatmap_seal_capelin_species_catch_", i, ", include=TRUE} \n",
+    "create_heatmap_multispe_catch(data = Df_merged_seal_vs_capelin_catch_final, SPECIE_NAME = '", species, "', species_one_fixe = 'seal', species_two_fixe = 'capelin', species_one = 'seal', species_two = 'capelin')\n",
+    "```\n\n\n"
+  )
+    
+  plots_species_seal_vs_capelin_catch[[species]] <- unlist(code)
+}
+
+```
+
+`r knit(text = unlist(plots_species_seal_vs_capelin_catch))`
+
+# Exploratory monospecific simulation: biomass
+
+## Simulation input description {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod
+
+```{r generate_B_exploratory_simulation_seal}
+
+simulation_generate_function(
+  simulation_names = paste0("Bcod_", c(3.576*(c(1, 10, 20, 30, 40, 50, 60) / 100), 2.18, 3.576*(c(70, 80, 90, 100) / 100))), 
+  Weight = 1,
+  Group_no = 12,
+  Type = -1,
+  time_step_start = 1,
+  nb_time_steps = 100,
+  fill_value_min = 2.18, 
+  fill_value_max =  c(3.576*(c(1, 10, 20, 30, 40, 50, 60) / 100), 2.18, 3.576*(c(70, 80, 90, 100) / 100)),
+  output_file = here(Cod_input, "Final_simulation", "Cod_biomass_input_Final_simulation.csv"))
+
+```
+
+* The table below shows the different % of B values of 1985' biomass for `Cod` based on value max : 3.576 t/km2 for cod > 35 cm and 0.958 t/km2 for cod < 35 cm. 
+
+```{r harp_seal_B_first_simulation_quick_description_seal, include = TRUE, results = "asis"}
+
+datatable(data = data.frame("Biomass value simulation" = paste0("Bcod_", c(3.576*(c(1, 10, 20, 30, 40, 50, 60) / 100), 2.18, 3.576*(c(70, 80, 90, 100) / 100)))), filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+### Capelin
+
+```{r generate_B_exploratory_simulation_cod}
+
+simulation_generate_function(
+  simulation_names = paste0("Bcapelin_", c(13.77*(c(1, 10, 20)/ 100), 3.05, 13.77*(c(30, 40, 50, 60, 70)/ 100), 13.77*(c(80, 90, 100)/ 100))), 
+  Weight = 1,
+  Group_no = 28,
+  Type = -1,
+  time_step_start = 1,
+  nb_time_steps = 100,
+  fill_value_min = 3.05, 
+  fill_value_max = c(13.77*(c(1, 10, 20)/ 100), 3.05, 13.77*c(30, 40, 50, 60, 70, 80, 90, 100)/ 100),
+  output_file = here(Capelin_input, "Final_simulation", "Capelin_biomass_input_Final_simulation.csv"))
+
+```
+
+* The table below shows the different % of B values of 1985' biomass for `Capelin` based on value max : 13.77 t/km2
+
+```{r harp_seal_B_first_simulation_quick_description_cod, include = TRUE, results = "asis"}
+
+datatable(data = data.frame("Biomass value simulation" = paste0("Bcapelin_", 13.77*(c(1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100) / 100))), filter="top", 
+          rownames = FALSE, options = list(pageLength = 5, scrollX=T))
+
+```
+
+## Percentage of groups impacted by at least 20% & 40% change {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod
+
+```{r import_final_simulation_Bcod}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Bcod", 
+                                      species_long = "Cod", 
+                                      wich_simulation = "final",
+                                      F_vector = c(3.576*(c(1, 10, 20, 30, 40, 50, 60) / 100), 2.18, 3.576*(c(70, 80, 90, 100) / 100)),
+                                      digit_import_value = 5,
+                                      print = TRUE)
+
+```
+
+```{r create_group_43_for_merged_cod_life_stage_final_bsim}
+
+Df_merged_Bcod_biomass_final  <- Df_merged_Bcod_biomass_final %>%
+  mutate(across(starts_with("biomass"), as.numeric)) %>%
+  filter(Group_number %in% c(12, 13)) %>%
+  mutate(
+    across(starts_with("biomass"), ~ sum(.)),
+    Group_number = 43,
+    Group_name = "Cod"
+  ) %>%
+  slice(1) %>%
+  rbind.data.frame(Df_merged_Bcod_biomass_final) %>%
+  arrange(Group_number)
+
+```
+
+```{r import_final_simulation_catch_Bcod}
+
+import_transformation_output_function(input_select = "catch", 
+                                      species_short = "Bcod", 
+                                      species_long = "Cod", 
+                                      wich_simulation = "final",
+                                      F_vector =  c(3.576*(c(1, 10, 20, 30, 40, 50, 60) / 100), 2.18, 3.576*(c(70, 80, 90, 100) / 100)),
+                                      digit_import_value = 5,
+                                      print = FALSE)
+
+```
+
+```{r groups_impacted_calculation_cod_biomass}
+
+calculate_impact_summary_LoR(LoR_rename = c(1, 10, 20, 30, 40, 50, 60, "obs", 70, 80, 90, 100), 
+                         b_data = Df_merged_Bcod_biomass_final, 
+                         species_unselect = c(12, 13, 43),
+                         LoR_obs_position = "LoR_70", 
+                         species = "Cod", 
+                         total_number_group = EwE_number_group-3,#-attention bien regrouper plus haut toutes les cods. 
+                         species_short = "bcod")
+
+```
+
+```{r groups_impacted_calculation_cod_t20_biomass, include=TRUE, results='asis'}
+
+DT_tables_bcod$T20
+
+```
+
+```{r groups_impacted_calculation_cod_t40_biomass, include=TRUE, results='asis'}
+
+DT_tables_bcod$T40
+
+```
+
+```{r export_Df_merged_Bcod_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_Bcod_biomass_final, file = here("Rds_export_adapted_data", "Bcod_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_Bcod_catch_final, file = here("Rds_export_adapted_data", "Bcod_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+### Capelin 
+
+```{r import_final_simulation_Bcapelin}
+
+import_transformation_output_function(input_select = "biomass", 
+                                      species_short = "Bcapelin", 
+                                      species_long = "Capelin", 
+                                      wich_simulation = "final",
+                                      F_vector = c(13.77*(c(1, 10, 20)/ 100), 3.05, 13.77*c(30, 40, 50, 60, 70, 80, 90, 100)/ 100),
+                                      digit_import_value = 5,
+                                      print = TRUE)
+
+```
+
+```{r import_final_simulation_catch_Bcapelin}
+
+import_transformation_output_function(input_select = "catch", 
+                                      species_short = "Bcapelin", 
+                                      species_long = "Capelin", 
+                                      wich_simulation = "final",
+                                      F_vector =  c(13.77*(c(1, 10, 20)/ 100), 3.05, 13.77*c(30, 40, 50, 60, 70, 80, 90, 100)/ 100),
+                                      digit_import_value = 5,
+                                      print = TRUE)
+
+```
+
+```{r groups_impacted_calculation_capelin_biomass}
+
+calculate_impact_summary_LoR(LoR_rename = c(1, 10, 20, "obs", 30, 40, 50, 60, 70, 80, 90, 100), 
+                         b_data = Df_merged_Bcapelin_biomass_final, 
+                         species_unselect = 28,
+                         LoR_obs_position = "LoR_30",
+                         species = "Capelin", 
+                         total_number_group = EwE_number_group-1, 
+                         species_short = "bcapelin")
+
+```
+
+```{r groups_impacted_calculation_capelin_t20_biomass, include=TRUE, results='asis'}
+
+DT_tables_bcapelin$T20
+
+```
+
+```{r groups_impacted_calculation_capelin_t40_biomass, include=TRUE, results='asis'}
+
+DT_tables_bcapelin$T40
+
+```
+
+```{r export_Df_merged_Bcapelin_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_Bcapelin_biomass_final, file = here("Rds_export_adapted_data", "Bcapelin_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_Bcapelin_catch_final, file = here("Rds_export_adapted_data", "Bcapelin_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+## Summary table of percentage change {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod
+
+```{r Large_table_group_impacted_bcod, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_bcod_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Harp Seal: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Capelin
+
+```{r Large_table_group_impacted_bcapelin, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_bcapelin_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Cod: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Summary heatmap of percentage change
+
+```{r final_summary_heatmap_cod_capelin_biomass, include=TRUE}
+
+summary_heatmap_funtion_LoR(data_sp_cod = Df_impacted_bcod_large_table,
+                             sp_cod_1 = "Cod> 35 cm",
+                             sp_cod_2 = "Cod<= 35 cm",
+                             nb_row_spcod_1 = 11,
+                             nb_row_spcod_2 = 12,
+                             data_sp_capelin = Df_impacted_bcapelin_large_table,
+                             sp_capelin = "Capelin",
+                             nb_row_spcapelin_1 = 27,
+                             nb_row_spcapelin_2 = 28)
+
+```
+
+## Key figure : % groups impacted change according to LoR change & MSY illustration {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod
+
+```{r key_figure_bcod, include=TRUE}
+
+key_fig_function_LoR(LoR_order = c(1, 10, 20, 30, 40, 50, 60,"obs", 70, 80, 90, 100),
+                 catch_data = Df_merged_Bcod_catch_final, 
+                 Group_number_specific= 12,
+                 data_20 = Df_impacted_bcod_table_20,
+                 data_40 = Df_impacted_bcod_table_40,
+                 obs_LoR_data = 8,
+                 x_axis_species = "Cod",
+                 name_species_rds = "cod")
+
+```
+
+```{r key_figure_bcod_weeb, include=TRUE}
+
+key_fig_function_LoR_web(LoR_order = c(1, 10, 20, 30, 40, 50, 60,"obs", 70, 80, 90, 100),
+                 data_20 = Df_impacted_bcod_table_20,
+                 data_40 = Df_impacted_bcod_table_40,
+                 obs_LoR_data = 8,
+                 x_axis_species = "Cod",
+                 name_species_rds = "cod")
+
+```
+
+### Capelin
+
+```{r key_figure_bcapelin, include=TRUE}
+
+key_fig_function_LoR(LoR_order = c(1, 10, 20, "obs", 30, 40, 50, 60, 70, 80, 90, 100),
+                 catch_data = Df_merged_Bcapelin_catch_final, 
+                 Group_number_specific= 28,
+                 data_20 = Df_impacted_bcapelin_table_20,
+                 data_40 = Df_impacted_bcapelin_table_40,
+                 obs_LoR_data = 4,
+                 x_axis_species = "Capelin",
+                 name_species_rds = "capelin")
+
+```
+
+```{r key_figure_bcapelin_weeb, include=TRUE}
+
+key_fig_function_LoR_web(LoR_order = c(1, 10, 20, "obs", 30, 40, 50, 60, 70, 80, 90, 100),
+                 data_20 = Df_impacted_bcapelin_table_20,
+                 data_40 = Df_impacted_bcapelin_table_40,
+                 obs_LoR_data = 4,
+                 x_axis_species = "Capelin",
+                 name_species_rds = "capelin")
+
+```
+
+# Exploratory other species groups function 
+
+## Cod {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Biomass relative change
+
+```{r biomass_relative_change_function_cod_biomass, include=TRUE}
+
+heatmap_monospe_relative_biomass_LoR(data = Df_merged_Bcod_biomass_final,
+                                 LoR_order = c(1, 10, 20, 30, 40, 50, 60,"obs", 70, 80, 90, 100),
+                                 species_name = "Cod")
+
+```
+
+### Catch relative change
+
+```{r catch_relative_change_function_cod_biomass, include=TRUE}
+
+heatmap_monospe_relative_catch_LoR(data = Df_merged_Bcod_catch_final,
+                                   LoR_order = c(1, 10, 20, 30, 40, 50, 60,"obs", 70, 80, 90, 100),
+                                   species_name = "Cod")
+
+```
+
+## Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Capelin LoR on CoD biomass trend
+
+```{r Cod_trends_LoR_capelin_function, include=TRUE}
+
+Cod_trends_LoR_capelin_function(data = Df_merged_Bcapelin_biomass_final,
+                                LoR_order = c(1, 10, 20, "obs", 30, 40, 50, 60, 70, 80, 90, 100),
+                                species_name = "Capelin",
+                                species_select = c("Cod> 35 cm", "Cod<= 35 cm"),
+                                area = "EwE 2020 2J3K - 50%:",
+                                save_name = "Bcapelin_LoR_Cod_biomass_2J3K_50.rds")
+
+```
+
+### Biomass relative change
+
+```{r biomass_relative_change_function_capelin_biomass, include=TRUE}
+
+heatmap_monospe_relative_biomass_LoR(data = Df_merged_Bcapelin_biomass_final,
+                                     LoR_order = c(1, 10, 20, "obs", 30, 40, 50, 60, 70, 80, 90, 100),
+                                     species_name = "Capelin")
+
+```
+
+### Catch relative change
+
+```{r catch_relative_change_function_capelin_biomass, include=TRUE}
+
+heatmap_monospe_relative_catch_LoR(data = Df_merged_Bcapelin_catch_final,
+                                   LoR_order = c(1, 10, 20, "obs", 30, 40, 50, 60, 70, 80, 90, 100),
+                                   species_name = "Capelin")
+
+```
+
+```{r save_mono_biomass_catch}
+
+all_save_simulation()
+
+```
+
+# Selected multispecific simulation: biomass Cod x Capelin
+
+## Simulation input description: Cod x Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Input table description
+
+```{r combined_simulation_generate_CODxCAPELIN_biomass}
+
+combined_simulation_generate_function(
+  simulation_names = c(paste0("Bcod_", 3.576*(c(1, 25, 50, 75, 100) / 100)), paste0("Bcapelin_", 13.77*(c(1, 25, 50, 75, 100) / 100))),
+  Weight = 1,   
+  Group_no = c(rep(12, 5),rep(28, 5)),
+  Type = -1,     
+  time_step_start = 1, 
+  nb_time_steps = 100, 
+  fill_value_min = c(rep(2.18, 5),rep(3.05, 5)), 
+  fill_value_max = c(3.576*(c(1, 25, 50, 75, 100) / 100), 
+                    13.77*(c(1, 25, 50, 75, 100) / 100)),
+  output_file = here(Cod_versus_capelin_input, "Final_simulation", "cod_versus_capelin_biomass_input_simulation.csv"),
+  species_1 = "cod",
+  species_1_number = "12",
+  F_species_1 = 2.18,
+  species_2 = "capelin",
+  species_2_number = "28",
+  F_species_2 = 3.05,
+  order_colonnes = c(1,2,3,4,12,5,6,7,13,8,9,10,11),
+  biomass_sim = TRUE
+  )
+
+```
+
+```{r combined_import_generate_biomass_CODxCAPELIN_biomass}
+
+import_combined_transformation_output_function_LoR(input_select = "biomass", 
+                                                species_short = "cod", 
+                                                species_short_2 = "capelin", 
+                                                folder = "Cod_versus_Capelin", 
+                                                wich_simulation = "final", 
+                                                F_vector = 3.576*(c(1, 25, 50, 75, 100) / 100),
+                                                F_vector_2 = 13.77*(c(1, 25, 50, 75, 100) / 100),
+                                       obs_F_vector = 2.18,
+                                       obs_F_vector_2 = 3.05,
+                                                digit_import_value = 5, 
+                                                digit_import_value_2 = 5,
+                                       LoD_vector_name= c("obs", "1", "25", "50", "75", "100"),
+                                       change_name_for_LoD = TRUE,
+                                                print = TRUE)
+
+```
+
+```{r combined_import_generate_catch_CODxCAPELIN_biomass}
+
+import_combined_transformation_output_function_LoR(input_select = "catch", 
+                                                species_short = "cod", 
+                                                species_short_2 = "capelin", 
+                                                folder = "Cod_versus_Capelin", 
+                                                wich_simulation = "final", 
+                                                F_vector = 3.576*(c(1, 25, 50, 75, 100) / 100),
+                                                F_vector_2 = 13.77*(c(1, 25, 50, 75, 100) / 100),
+                                       obs_F_vector = 2.18,
+                                       obs_F_vector_2 = 3.05,
+                                                digit_import_value = 5, 
+                                                digit_import_value_2 = 5,
+                                       LoD_vector_name= c("obs", "1", "25", "50", "75", "100"),
+                                       change_name_for_LoD = TRUE,
+                                                print = TRUE)
+
+```
+
+```{r summary_combined_import_generate_CODxCAPELIN_biomass, include=TRUE, results='asis'}
+
+table_combi_function_LoR(data = Df_merged_cod_vs_capelin_biomass_final_LoR,
+                     species_col = "Cod",
+                     species_row = "Capelin")
+
+```
+
+```{r export_Df_merged_cod_vs_capelin_biomass/catch_final_2J3K}
+
+saveRDS(Df_merged_cod_vs_capelin_biomass_final_LoR, file = here("Rds_export_adapted_data", "Bcod_Bcapelin_simulation_biomass_EwE_2020_2J3K.rds"))
+saveRDS(Df_merged_cod_vs_capelin_catch_final_LoR, file = here("Rds_export_adapted_data", "Bcod_Bcapelin_simulation_catch_EwE_2020_2J3K.rds"))
+
+```
+
+## Combined simulation: Cod x Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Heatmap of Biomass & LoR : Harp seal 
+
+```{r heatmap_biomass_lor_codxcapelin_cod, include=TRUE}
+
+heatmap_multispecific_biomass_LoR_function(Df_merged_cod_vs_capelin_biomass_final_LoR)
+
+```
+
+### MSE curve 
+
+```{r harp_seal_stock_assessment_rescale, include=TRUE}
+
+Harp_seal_biomass_stock_assessment_rescale_function(prop_sensitivity = 0.5,
+                                                    region = "2J3K")
+
+```
+
+```{r MSE_curve_codXcapelin_sim, include=TRUE}
+
+Harp_seal_relative_MSE_simulation_function_2J3K(data_simulation = Df_merged_cod_vs_capelin_biomass_final_LoR,
+                                  data_assessment = heap_seal_biomass_stock_assessment)
+
+```
+
+### Table of groups impacted by 20% & 40% of change
+
+```{r summary_multispecific_cod_capelin_20_biomass_biomass, include = TRUE}
+
+calculate_impact_summary_multispecific_LoR(
+                         F_data = Df_merged_cod_vs_capelin_biomass_final_LoR, 
+                         species_unselect = c(12, 13, 28), 
+                         species_1 = "cod",
+                         species_2 = "capelin", 
+                         total_number_group = EwE_number_group-3,
+                         species_short = "cod_vs_capelin")
+
+```
+
+```{r summary_multispecific_cod_capelin_20_dttable_biomass, include = TRUE, results='asis'}
+
+DT_tables_cod_vs_capelin$T20
+
+```
+
+```{r summary_multispecific_cod_capelin_40_dttable_biomass, include = TRUE, results='asis'}
+
+DT_tables_cod_vs_capelin$T40
+
+```
+
+### Heatmap of groups impacted by 20% of change
+
+```{r heatmap_multispecific_group_impacted_seal_cod_20_biomass, include=TRUE}
+
+heatmap_multispecific_group_impacted_LoR(data= Df_impacted_cod_vs_capelin_table_20,
+                                           species_one_fixe = "cod", 
+                                           species_two_fixe = "capelin", 
+                                           species_one = "cod",
+                                           species_two = "capelin",
+                                           percent = "20%")
+
+```
+
+
+### Heatmap of groups impacted by 40% of change
+
+```{r heatmap_multispecific_group_impacted_seal_cod_40_biomass, include=TRUE}
+
+heatmap_multispecific_group_impacted_LoR(data= Df_impacted_cod_vs_capelin_table_40,
+                                           species_one_fixe = "cod", 
+                                           species_two_fixe = "capelin", 
+                                           species_one = "cod",
+                                           species_two = "capelin",
+                                           percent = "40%")
+
+```
+
+### Summary Table of percentage change
+
+```{r Large_table_group_impacted_sealvcod_biomass, include=TRUE, results='asis'}
+
+datatable(data = Df_impacted_cod_vs_capelin_large_table, filter="top",
+          rownames = FALSE, options = list(pageLength = 10, scrollX=T),
+          caption = "For Harp seal verus cod simulations: Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -.")
+
+```
+
+### Summary heatmap of percentage change
+
+```{r final_summary_heatmap_sealxcod_biomass, include=TRUE}
+
+summary_heatmap_funtion_multi_LoR(Df_impacted_cod_vs_capelin_large_table, "cod", "capelin")
+
+```
+
+# Exploratory other species groups function: Cod x Capelin simulation
+
+## Per Biomass {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+```{r knit_loop_cod_capelin_biomass}
+
+# Create a list to store Rmarkdown code chunks for each species
+plots_species_cod_vs_capelin_biomass <- list()
+
+# Iterate over each species
+for (i in seq_along(unique(Df_merged_cod_vs_capelin_biomass_final_LoR$Group_name))) {
+  species <- unique(Df_merged_cod_vs_capelin_biomass_final_LoR$Group_name)[i]
+    code <- paste0(
+    "### ", species, " {.tabset}\n\n",
+    "```{r heatmap_cod_capelin_species_biomass_", i, ", include=TRUE} \n",
+    "create_heatmap_multispe_biomass_LoR(data = Df_merged_cod_vs_capelin_biomass_final_LoR, SPECIE_NAME = '", species, "', species_one_fixe = 'cod', species_two_fixe = 'capelin', species_one = 'cod', species_two = 'capelin')\n",
+    "```\n\n\n"
+  )
+    
+  plots_species_cod_vs_capelin_biomass[[species]] <- unlist(code)
+}
+
+```
+
+`r knit(text = unlist(plots_species_cod_vs_capelin_biomass))`
+
+## Per Catch {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+```{r knit_loop_cod_capelin_catch_biomass}
+
+Df_merged_cod_vs_capelin_catch_final_LoR <- Df_merged_cod_vs_capelin_catch_final_LoR %>%
+  mutate_at(vars(starts_with("catch")), as.numeric) %>%
+  filter(rowSums(select(., starts_with("catch")), na.rm = TRUE) > 0) 
+
+# Create a list to store Rmarkdown code chunks for each species
+plots_species_cod_vs_capelin_catch <- list()
+
+# Iterate over each species
+for (i in seq_along(unique(Df_merged_cod_vs_capelin_catch_final_LoR$Group_name))) {
+  species <- unique(Df_merged_cod_vs_capelin_catch_final_LoR$Group_name)[i]
+    code <- paste0(
+    "### ", species, " {.tabset}\n\n",
+    "```{r heatmap_cod_capelin_species_catch_", i, ", include=TRUE} \n",
+    "create_heatmap_multispe_catch_LoR(data = Df_merged_cod_vs_capelin_catch_final_LoR, SPECIE_NAME = '", species, "', species_one_fixe = 'cod', species_two_fixe = 'capelin', species_one = 'cod', species_two = 'capelin')\n",
+    "```\n\n\n"
+  )
+    
+  plots_species_cod_vs_capelin_catch[[species]] <- unlist(code)
+}
+
+```
+
+`r knit(text = unlist(plots_species_cod_vs_capelin_catch))`

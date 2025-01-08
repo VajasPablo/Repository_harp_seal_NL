@@ -1,0 +1,25 @@
+
+### Function for generate ecopath standardised input ###
+
+simulation_generate_function <- function(simulation_names, Weight, Group_no, Type, time_step_start, nb_time_steps, fill_value_min, fill_value_max, output_file) {
+  # Create fixed columns
+  fix_col <- c("Group", "Weight", "Group no.", "Type", time_step_start:max(nb_time_steps))
+  
+  # Use mapply to apply the generate_simulation_column function to each set of parameters
+  sim_cols <- mapply(function(sim_name, weight, group_no, type, nb_time_step, fill_value_min, fill_value_max) {
+    # Generate a column for a single simulation
+    Sim_col <- c(sim_name, as.character(weight), as.character(group_no), as.character(type), 
+                 as.character(seq(fill_value_min, fill_value_max, length.out = nb_time_step/2)),
+                 rep(as.character(fill_value_max), nb_time_step/2))
+    return(Sim_col)
+  }, simulation_names, Weight, Group_no, Type, nb_time_steps, fill_value_min, fill_value_max, SIMPLIFY = FALSE)
+  
+  # Combine fixed columns with generated columns
+  simulation_data <- cbind.data.frame(fix_col, do.call(cbind, sim_cols))
+  colnames(simulation_data) <- NULL
+  
+  # Export the data to a CSV file
+  write.csv(simulation_data, file = output_file, row.names = FALSE)
+  
+  return(simulation_data)
+}

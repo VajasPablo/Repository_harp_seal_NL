@@ -1,0 +1,512 @@
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes(label = round(data_process[[i]], 4)), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0"))) %>% as.data.frame()
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes(label = round(data_process[[i]], 4)), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+data_process[[1]]
+data_process[[3]]
+names(data_process)[i]
+names(data_process)[1]
+names(data_process)[3]
+names(data_process)[4]
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[, i], na.rm = TRUE), max(data_process[, i], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes(label = round(data_process[, i], 4)), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+# geom_text(aes(label = round(data_process[[i]], 4)), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes(label = round(data_process[, i], 4)), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes(label = round(data_process[[i]], 4)), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+data_process[[3]
+data_process[[3]]
+data_process[[4]]
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes_string(label = paste0("`", names(data_process)[i], "`")), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper 20%")) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two, percent) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes_string(label = paste0("`", names(data_process)[i], "`")), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper", percent)) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod",
+percent = "20%")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two, percent) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes_string(label = paste0("`", names(data_process)[i], "`")), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper ", percent)) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod",
+percent = "20%")
+print_large_table(Df_impacted_harp_seal_vs_cod_large_table, "Harp seal versus Cod simulation")
+print_large_table_scroll <- function(data, species) {
+knitr::kable(data, caption = paste0("For ", species, " Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -."), align = "c") %>%
+kableExtra::kable_styling() %>%
+kableExtra::scroll_box(width = "100%", height = "100%") %>%
+print()
+}
+print_large_table(Df_impacted_harp_seal_vs_cod_large_table, "Harp seal versus Cod simulation")
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod",
+percent = "20%")
+calculate_impact_summary_multispecific <- function(F_data, species_unselect, species, total_number_group, species_short) {
+df_group_impacted <- function(F_data, species_unselect){
+# Filter F_data and rename columns
+Df_percentage <- F_data %>%
+filter(!(Group_number %in% species_unselect)) %>%
+select(-c(Group_number, Group_name)) %>%
+rename_with(~ gsub("biomass_annual_", "", .), starts_with("biomass_annual_"))
+# Convert selected columns to numeric
+selected_columns_numeric <- apply(Df_percentage, 2, as.numeric)
+# Calculate percentage changes
+percentage_changes <- (selected_columns_numeric[, -1] - selected_columns_numeric[, 1]) / abs(selected_columns_numeric[, 1]) * 100
+# Create column for LoD_0
+LoD_seal_obs_LoD_cod_obs <- rep(0, nrow(Df_percentage))
+# Combine dataframes
+result_df <- cbind(F_data %>% filter(!(Group_number %in% species_unselect)) %>% select(Group_number, Group_name),
+LoD_seal_obs_LoD_cod_obs,
+percentage_changes)
+# Start calculation
+}
+Df_change <- function(df, threshold) {
+df %>%
+select(-c(Group_number, Group_name)) %>%
+mutate_if(is.numeric, ~ case_when(
+. >= threshold ~ "+",
+. <= -threshold ~ "-",
+TRUE ~ "no"
+))
+}
+summary_function <- function(df_change, total_number_group, threshold) {
+df_change %>%
+mutate_all(~ as.numeric(. == "+" | . == "-")) %>%
+summarise(across(everything(), ~ ifelse(all(is.na(.)), NA, round(sum(., na.rm = TRUE), 2)))) %>%
+bind_rows(
+data.frame(t(round(colSums(df_change == "+"), 2)), Description = "Count of +"),
+data.frame(t(round(colSums(df_change == "-"), 2)), Description = "Count of -")
+) %>%
+mutate(Description = coalesce(Description, "Total Count ±")) %>%
+bind_rows(
+df_change %>%
+mutate_all(~ as.numeric(. == "+" | . == "-")) %>%
+summarise(across(everything(), ~ ifelse(all(is.na(.)), NA, round(sum(., na.rm = TRUE) / total_number_group, 2)))) %>%
+bind_rows(
+data.frame(t(round(colSums(df_change == "+") / total_number_group, 2)), Description = "% of +"),
+data.frame(t(round(colSums(df_change == "-") / total_number_group, 2)), Description = "% of -")
+) %>%
+mutate(Description = coalesce(Description, "Total % ±"))
+) %>%
+dplyr::relocate(Description, .before = 1) # move Description columne at first position
+}
+# Call df_group_impacted function
+result_df <- df_group_impacted(F_data, species_unselect)
+# Call summary_function with appropriate thresholds
+table_20 <- summary_function(Df_change(result_df, 20), total_number_group, 20)
+table_40 <- summary_function(Df_change(result_df, 40), total_number_group, 40)
+assign(paste0("Df_impacted_", species_short, "_table_20"), table_20, envir = .GlobalEnv)
+assign(paste0("Df_impacted_", species_short, "_table_40"), table_40, envir = .GlobalEnv)
+kable(table_20, caption = paste0("For ", species, " Table of the species number and species percentage impacted by more than 20% of total change"),  align = "c", output = "html") %>%
+kable_styling() %>%
+scroll_box(width = "100%", height = "100%") %>% print()
+kable(table_40, caption = paste0("For ", species, " Table of the species number and species percentage impacted by more than 20% of total change"),  align = "c", output = "html") %>%
+kable_styling() %>%
+scroll_box(width = "100%", height = "100%") %>% print()
+impacted_group_table <- result_df %>%
+mutate_at(vars(starts_with("LoD")), ~case_when(
+. == 0 ~ "0",
+. > 0 & . <= 20 ~ "+",
+. > 20 & . <= 40 ~ "+ +",
+. > 40 ~ "+ + +",
+. >= -20 & . < 0 ~ "-",
+. < -20 & . >= -40 ~ "- -",
+. < -40 ~ "- - -",
+TRUE ~ as.character(.)
+)) %>%
+select(-Group_number)
+object_name <- paste0("Df_impacted_", species_short, "_large_table")
+assign(object_name, impacted_group_table, envir = .GlobalEnv)
+write.xlsx(get(object_name), file = here("R_results_export", paste0(object_name, ".xlsx")), rowNames = FALSE)
+}
+calculate_impact_summary_multispecific(
+F_data = Df_merged_seal_vs_cod_biomass_final,
+species_unselect = c(13, 14, 6),
+species = "Harp seal vs Cod",
+total_number_group = 49-3,
+species_short = "harp_seal_vs_cod")
+heatmap_multispecific_group_impacted <- function(data, species_one_fixe, species_two_fixe, species_one, species_two, percent) {
+data_process <- data %>%
+pivot_longer(cols = starts_with("LoD"),
+names_to = c(paste0("LoD_", species_one_fixe), paste0("LoD_", species_two_fixe)),
+names_pattern = paste0("LoD_", species_one_fixe, "_(.*?)_LoD_", species_two_fixe, "_(.*)"),
+values_to =  "value") %>%
+pivot_wider(names_from = Description, values_from = value) %>%
+mutate(
+!!paste0("LoD_", species_two) := factor(get(paste0("LoD_", species_two)), levels = c("0", "obs", "25", "50", "75", "99")),
+!!paste0("LoD_", species_one) := factor(get(paste0("LoD_", species_one)), levels = c("99", "75", "50", "25", "obs", "0")))
+ggplot_list <- list()  # Créer une liste pour stocker les graphiques
+for (i in 3:8) {  # Boucle sur les colonnes 3 à 8
+ggplot_list[[i-2]] <- ggplot(data_process, aes_string(x = paste0("LoD_", species_two), y = paste0("LoD_", species_one), fill = paste0("`", names(data_process)[i], "`"))) +
+geom_tile(color = "white") +
+scale_fill_gradientn(colours = c("#d9ed92", "#b5e48c", "#99d98c", "#76c893", "#52b69a", "#34a0a4"),
+limits = c(min(data_process[[i]], na.rm = TRUE), max(data_process[[i]], na.rm = TRUE)),
+breaks = pretty_breaks(n = 5)) +
+geom_text(aes_string(label = paste0("`", names(data_process)[i], "`")), color = "black", size = 4) +
+theme_minimal() +
+scale_x_discrete(position = "top") +
+labs(x = paste("Level of Depletion", species_two),
+y = paste("Level of Depletion", species_one),
+fill = paste0(names(data_process)[i], "\ngroups", "\nimpacted", "\nupper ", percent)) +
+theme(axis.title.x = element_text(size = 10),
+axis.title.y = element_text(size = 10),
+axis.text.x = element_text(size = 10),
+axis.text.y = element_text(size = 10),
+plot.title = element_text(size = 12),
+legend.text = element_text(size = 10),
+legend.title = element_text(size = 10))
+}
+suppressWarnings(print(grid.arrange(grobs = ggplot_list, ncol = 2)))  # Imprimer les graphiques avec grid.arrange
+}
+heatmap_multispecific_group_impacted(data= Df_impacted_harp_seal_vs_cod_table_20,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod",
+percent = "20%")
+print_large_table_scroll <- function(data, species) {
+knitr::kable(data, caption = paste0("For ", species, " Summary large table of groups impacted change for values in the range: Equal to 0: 0; Greater than 0 and less than or equal to 20: +; Greater than 20 and less than or equal to 40: + +; Greater than 40: + + +; Greater than or equal to -20 and less than 0: -; Less than -20 and greater than or equal to -40: - -; Less than -40: - - -."), align = "c") %>%
+kableExtra::kable_styling() %>%
+kableExtra::scroll_box(width = "100%", height = "100%") %>%
+print()
+}
+print_large_table(Df_impacted_harp_seal_vs_cod_large_table, "Harp seal versus Cod simulation")
+heatmap_multispecific_biomass_LoD_function(data = Df_merged_seal_vs_cod_biomass_final,
+species_number = c(13, 14),
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "seal",
+species_two = "cod")
+heatmap_multispecific_biomass_LoD_function(data = Df_merged_seal_vs_cod_biomass_final,
+species_number = 6,
+species_one_fixe = "seal",
+species_two_fixe = "cod",
+species_one = "cod",
+species_two = "seal")

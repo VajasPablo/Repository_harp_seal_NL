@@ -1,0 +1,1215 @@
+---
+title: "EwEs Ecological indicators - synthesis report"
+author: "Vajas Pablo"
+date: ' `r Sys.Date()` '
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    number_sections: true
+editor_options: 
+  chunk_output_type: console
+link-citations: true
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+
+knitr::opts_chunk$set(
+    echo = FALSE,
+    include = FALSE,
+    fig.width = 12,
+    fig.height = 8,
+    fig.path = "R_figures_export/",
+    message = FALSE,
+    warning = FALSE,
+    dev = c("png", "pdf")
+)
+
+# options(device = "quartz")
+
+```
+
+```{r package}
+
+install_and_load_packages <- function() {
+  # List of packages to be installed and loaded
+  packages <- c("tidyverse", "gridExtra", "knitr", "writexl", "openxlsx", "here", "scales", "DT", "patchwork")
+  
+  # Function to install and load a package
+  install_and_load <- function(package_name) {
+    if (!requireNamespace(package_name, quietly = TRUE)) {
+      message(paste("Package", package_name, "is not installed. Installing..."))
+      install.packages(package_name, dependencies = TRUE)
+    }
+    message(paste("Loading package", package_name, "..."))
+    suppressMessages(library(package_name, character.only = TRUE))
+  }
+  
+  # Loop through the list of packages
+  for (pkg_name in packages) {
+    install_and_load(pkg_name)
+  }
+}
+
+# Call the function to install and load packages
+install_and_load_packages()
+
+```
+
+```{r source}
+
+sapply(list.files(here("R_script"), pattern="*.R", full.names=TRUE, ignore.case=TRUE),source,.GlobalEnv)
+
+```
+
+```{r rds_read_all}
+
+read_all_rds()
+
+```
+
+# Ecological indicator analysis - Ecosystem scale 
+
+## System Omnivory Index {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_SOI, include=TRUE}
+
+EwE_1985_SOI <- 0.179
+print(c("EwE_1985_SOI", EwE_1985_SOI))
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_SOI, include=TRUE}
+
+EwE_2013_SOI <- 0.1843428
+print(c("EwE_2013_SOI", EwE_2013_SOI))
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_SOI, include=TRUE}
+
+EwE_2020_2J3K_SOI <- 0.2257699
+print(c("EwE_2020_2J3K_SOI", EwE_2020_2J3K_SOI))
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_SOI, include=TRUE}
+
+EwE_2020_3LNO_SOI <- 0.230552
+print(c("EwE_2020_3LNO_SOI", EwE_2020_3LNO_SOI))
+
+```
+
+## General connectance {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_connectance, include=TRUE}
+
+EwE_1985_connectance <- 0.203
+print(c("EwE_1985_connectance", EwE_1985_connectance))
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_connectance, include=TRUE}
+
+EwE_2013_connectance <- 0.2044271
+print(c("EwE_2013_connectance", EwE_2013_connectance))
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_connectance, include=TRUE}
+
+EwE_2020_2J3K_connectance <- 0.2272457
+print(c("EwE_2020_2J3K_connectance", EwE_2020_2J3K_connectance))
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_connectance, include=TRUE}
+
+EwE_2020_3LNO_connectance <- 0.2107438
+print(c("EwE_2020_3LNO_connectance", EwE_2020_3LNO_connectance))
+
+```
+
+## Overhead/Capacity {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_OC, include = TRUE}
+
+EwE_1985_overhead <- 40710
+EwE_1985_capacity <- 51000
+
+EwE_1985_OC <-EwE_1985_overhead/EwE_1985_capacity
+print(c("EwE_1985_OC", EwE_1985_OC))
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_OC, include = TRUE}
+
+EwE_2013_overhead <- 37849.7
+EwE_2013_capacity <- 48168.6
+
+EwE_2013_OC <- EwE_2013_overhead/EwE_2013_capacity
+print(c("EwE_2013_OC", EwE_2013_OC))
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_OC, include = TRUE}
+
+EwE_2020_2J3K_overhead <- 28691.173828
+EwE_2020_2J3K_capacity <- 35720.359375
+
+EwE_2020_2J3K_OC <- EwE_2020_2J3K_overhead/EwE_2020_2J3K_capacity
+print(c("EwE_2020_2J3K_OC", EwE_2020_2J3K_OC))
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_OC, include = TRUE}
+
+EwE_2020_3LNO_overhead <- 34154
+EwE_2020_3LNO_capacity <- 43029
+
+EwE_2020_3LNO_OC <- EwE_2020_3LNO_overhead/EwE_2020_3LNO_capacity
+print(c("EwE_2020_3LNO_OC", EwE_2020_3LNO_OC))
+
+```
+
+## Transfer Efficiency {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_network_analysis_transfer_efficiency, include=TRUE}
+
+EwE_1985_network_analysis_transfer_efficiency <- openxlsx::read.xlsx(here("Ecol_ind_data_input","EwE_1985_network_analysis_transfer_efficiency.xlsx"), colNames = TRUE, rowNames = FALSE)
+print(EwE_1985_network_analysis_transfer_efficiency)
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_network_analysis_transfer_efficiency, include=TRUE}
+
+EwE_2013_network_analysis_transfer_efficiency <- openxlsx::read.xlsx(here("Ecol_ind_data_input","EwE_2013_network_analysis_transfer_efficiency.xlsx"), colNames = TRUE, rowNames = FALSE)
+print(EwE_2013_network_analysis_transfer_efficiency)
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_network_analysis_transfer_efficiency, include=TRUE}
+
+EwE_2020_2J3K_network_analysis_transfer_efficiency <- openxlsx::read.xlsx(here("Ecol_ind_data_input","EwE_2020_2J3K_network_analysis_transfer_efficiency.xlsx"), colNames = TRUE, rowNames = FALSE)
+print(EwE_2020_2J3K_network_analysis_transfer_efficiency)
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_network_analysis_transfer_efficiency, include=TRUE}
+
+EwE_2020_3LNO_network_analysis_transfer_efficiency <- openxlsx::read.xlsx(here("Ecol_ind_data_input","EwE_2020_3LNO_network_analysis_transfer_efficiency.xlsx"), colNames = TRUE, rowNames = FALSE)
+print(EwE_2020_3LNO_network_analysis_transfer_efficiency)
+
+```
+
+# Ecological indicator analysis - Species scale 
+
+## Connectance Index by species {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_connectance_index, include=TRUE}
+
+connectance_index_by_species_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Cod")
+
+connectance_index_by_species_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Capelin")
+
+connectance_index_by_species_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_connectance_index, include=TRUE}
+
+connectance_index_by_species_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Cod")
+
+connectance_index_by_species_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Capelin")
+
+connectance_index_by_species_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_connectance_index, include=TRUE}
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Cod")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Capelin")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_connectance_index, include=TRUE}
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Cod")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Capelin")
+
+connectance_index_by_species_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+## Surf index by species {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_surf_index, include=TRUE}
+
+SURF_index_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+SURF_index_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+SURF_index_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Capelin")
+
+SURF_index_function(EwE_period = "EwE_1985",
+                                      data_raw = "EwE_1985_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_surf_index, include=TRUE}
+
+SURF_index_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+SURF_index_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+SURF_index_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Capelin")
+
+SURF_index_function(EwE_period = "EwE_2013",
+                                      data_raw = "EwE_2013_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_surf_index, include=TRUE}
+
+SURF_index_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+SURF_index_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+SURF_index_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Capelin")
+
+SURF_index_function(EwE_period = "EwE_2020_2J3K",
+                                      data_raw = "EwE_2020_2J3K_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_surf_index, include=TRUE}
+
+SURF_index_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Cod> 35 cm")
+
+SURF_index_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Cod<= 35 cm")
+
+SURF_index_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Capelin")
+
+SURF_index_function(EwE_period = "EwE_2020_3LNO",
+                                      data_raw = "EwE_2020_3LNO_diet_composition",
+                                      select_species = "Seal Harp")
+
+```
+
+## Trophic Level by species {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_index_trophic_level, include=TRUE}
+
+Trophic_level_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Capelin")
+
+Trophic_level_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_index_trophic_level, include=TRUE}
+
+Trophic_level_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Capelin")
+
+Trophic_level_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_index_trophic_level, include=TRUE}
+
+Trophic_level_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Capelin")
+
+Trophic_level_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_index_trophic_level, include=TRUE}
+
+Trophic_level_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Trophic_level_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Capelin")
+
+Trophic_level_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+
+## Production/consumtion by species {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_Production_consumption, include=TRUE}
+
+Production_consumption_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Capelin")
+
+Production_consumption_species_function(EwE_period = "EwE_1985",
+                               data_raw = "EwE_1985_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_Production_consumption, include=TRUE}
+
+Production_consumption_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Capelin")
+
+Production_consumption_species_function(EwE_period = "EwE_2013",
+                               data_raw = "EwE_2013_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_Production_consumption, include=TRUE}
+
+Production_consumption_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Capelin")
+
+Production_consumption_species_function(EwE_period = "EwE_2020_2J3K",
+                               data_raw = "EwE_2020_2J3K_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_Production_consumption, include=TRUE}
+
+Production_consumption_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Cod> 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Cod<= 35 cm")
+
+Production_consumption_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Capelin")
+
+Production_consumption_species_function(EwE_period = "EwE_2020_3LNO",
+                               data_raw = "EwE_2020_3LNO_basic_estimates",
+                               select_species = "Seal Harp")
+
+```
+
+## Omnivory index by species {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_index_Omnivory_index, include=TRUE}
+
+Omnivory_index_species_function(EwE_period = "EwE_1985",
+                                        data_raw = "EwE_1985_key_indices",
+                                        select_species = "Cod> 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_1985",
+                                        data_raw = "EwE_1985_key_indices",
+                                        select_species = "Cod<= 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_1985",
+                                        data_raw = "EwE_1985_key_indices",
+                                        select_species = "Capelin")
+
+Omnivory_index_species_function(EwE_period = "EwE_1985",
+                                        data_raw = "EwE_1985_key_indices",
+                                        select_species = "Seal Harp")
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_index_Omnivory_index, include=TRUE}
+
+Omnivory_index_species_function(EwE_period = "EwE_2013",
+                                        data_raw = "EwE_2013_key_indices",
+                                        select_species = "Cod> 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_2013",
+                                        data_raw = "EwE_2013_key_indices",
+                                        select_species = "Cod<= 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_2013",
+                                        data_raw = "EwE_2013_key_indices",
+                                        select_species = "Capelin")
+
+Omnivory_index_species_function(EwE_period = "EwE_2013",
+                                        data_raw = "EwE_2013_key_indices",
+                                        select_species = "Seal Harp")
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_index_Omnivory_index, include=TRUE}
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_2J3K",
+                                        data_raw = "EwE_2020_2J3K_key_indices",
+                                        select_species = "Cod> 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_2J3K",
+                                        data_raw = "EwE_2020_2J3K_key_indices",
+                                        select_species = "Cod<= 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_2J3K",
+                                        data_raw = "EwE_2020_2J3K_key_indices",
+                                        select_species = "Capelin")
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_2J3K",
+                                        data_raw = "EwE_2020_2J3K_key_indices",
+                                        select_species = "Seal Harp")
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_index_Omnivory_index, include=TRUE}
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_3LNO",
+                                        data_raw = "EwE_2020_3LNO_key_indices",
+                                        select_species = "Cod> 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_3LNO",
+                                        data_raw = "EwE_2020_3LNO_key_indices",
+                                        select_species = "Cod<= 35 cm")
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_3LNO",
+                                        data_raw = "EwE_2020_3LNO_key_indices",
+                                        select_species = "Capelin")
+
+Omnivory_index_species_function(EwE_period = "EwE_2020_3LNO",
+                                        data_raw = "EwE_2020_3LNO_key_indices",
+                                        select_species = "Seal Harp")
+
+```
+
+## Keystoneness and Ralative Total Impact by species {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_index_Keystone_Relative_total_impact, include=TRUE}
+
+Keystone_RTI_species_function(EwE_period = "EwE_1985",
+                                data_raw = "EwE_1985_network_analysis_keystoneness",
+                                select_species = "Cod> 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_1985",
+                                data_raw = "EwE_1985_network_analysis_keystoneness",
+                                select_species = "Cod<= 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_1985",
+                                data_raw = "EwE_1985_network_analysis_keystoneness",
+                                select_species = "Capelin")
+
+Keystone_RTI_species_function(EwE_period = "EwE_1985",
+                                data_raw = "EwE_1985_network_analysis_keystoneness",
+                                select_species = "Seal Harp")
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_index_Keystone_Relative_total_impact, include=TRUE}
+
+Keystone_RTI_species_function(EwE_period = "EwE_2013",
+                                data_raw = "EwE_2013_network_analysis_keystoneness",
+                                select_species = "Cod> 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2013",
+                                data_raw = "EwE_2013_network_analysis_keystoneness",
+                                select_species = "Cod<= 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2013",
+                                data_raw = "EwE_2013_network_analysis_keystoneness",
+                                select_species = "Capelin")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2013",
+                                data_raw = "EwE_2013_network_analysis_keystoneness",
+                                select_species = "Seal Harp")
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_index_Keystone_Relative_total_impact, include=TRUE}
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_2J3K",
+                                data_raw = "EwE_2020_2J3K_network_analysis_keystoneness",
+                                select_species = "Cod> 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_2J3K",
+                                data_raw = "EwE_2020_2J3K_network_analysis_keystoneness",
+                                select_species = "Cod<= 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_2J3K",
+                                data_raw = "EwE_2020_2J3K_network_analysis_keystoneness",
+                                select_species = "Capelin")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_2J3K",
+                                data_raw = "EwE_2020_2J3K_network_analysis_keystoneness",
+                                select_species = "Seal Harp")
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_index_Keystone_Relative_total_impact, include=TRUE}
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_3LNO",
+                                data_raw = "EwE_2020_3LNO_network_analysis_keystoneness",
+                                select_species = "Cod> 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_3LNO",
+                                data_raw = "EwE_2020_3LNO_network_analysis_keystoneness",
+                                select_species = "Cod<= 35 cm")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_3LNO",
+                                data_raw = "EwE_2020_3LNO_network_analysis_keystoneness",
+                                select_species = "Capelin")
+
+Keystone_RTI_species_function(EwE_period = "EwE_2020_3LNO",
+                                data_raw = "EwE_2020_3LNO_network_analysis_keystoneness",
+                                select_species = "Seal Harp")
+
+```
+
+## Relative biomass {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### EwE 1985
+
+```{r EwE_1985_relative_biomass, echo=TRUE, include=TRUE}
+
+EwE_1985_harp_seal_biomass <- 0.4*0.534
+EwE_1985_cod_all_biomass <- 3.576 + 0.9584337
+EwE_1985_cod_sup_35_biomass <- 3.576
+EwE_1985_cod_inf_35_biomass <- 0.9584337
+EwE_1985_capelin_biomass <- 13.76607
+
+EwE_1985_total_biomass <- 299.0202
+
+EwE_1985_harp_seal_relative_biomass <- (EwE_1985_harp_seal_biomass / EwE_1985_total_biomass)* 100
+EwE_1985_cod_all_relative_biomass <- (EwE_1985_cod_all_biomass / EwE_1985_total_biomass)* 100
+EwE_1985_cod_sup_35_relative_biomass <- (EwE_1985_cod_sup_35_biomass / EwE_1985_total_biomass)* 100
+EwE_1985_cod_inf_35_relative_biomass <- (EwE_1985_cod_inf_35_biomass / EwE_1985_total_biomass)* 100
+EwE_1985_capelin_relative_biomass <- (EwE_1985_capelin_biomass / EwE_1985_total_biomass)* 100
+
+```
+
+### EwE 2013
+
+```{r EwE_2013_relative_biomass, echo=TRUE, include=TRUE}
+
+EwE_2013_harp_seal_biomass <- 0.4 * 0.665
+EwE_2013_cod_all_biomass <- 0.76 + 0.03806696
+EwE_2013_cod_sup_35_biomass <- 0.76
+EwE_2013_cod_inf_35_biomass <- 0.03806696
+EwE_2013_capelin_biomass <- 4.97
+  
+EwE_2013_total_biomass <- 256.4975
+  
+EwE_2013_harp_seal_relative_biomass <- (EwE_2013_harp_seal_biomass / EwE_2013_total_biomass)* 100
+EwE_2013_cod_all_relative_biomass <- (EwE_2013_cod_all_biomass / EwE_2013_total_biomass)* 100
+EwE_2013_cod_sup_35_relative_biomass <- (EwE_2013_cod_sup_35_biomass / EwE_2013_total_biomass)* 100
+EwE_2013_cod_inf_35_relative_biomass <- (EwE_2013_cod_inf_35_biomass / EwE_2013_total_biomass)* 100
+EwE_2013_capelin_relative_biomass <- (EwE_2013_capelin_biomass / EwE_2013_total_biomass)* 100
+
+```
+
+### EwE 2020 North - 2J3K
+
+```{r EwE_2020_2J3K_relative_biomass, echo=TRUE, include=TRUE}
+
+EwE_2020_2J3K_harp_seal_biomass <- 0.4 * 0.707
+EwE_2020_2J3K_cod_all_biomass <- 2.18 + 0.200149
+EwE_2020_2J3K_cod_sup_35_biomass <- 2.18
+EwE_2020_2J3K_cod_inf_35_biomass <- 0.200149
+EwE_2020_2J3K_capelin_biomass <- 3.05
+  
+EwE_2020_2J3K_total_biomass <- 254.1454
+
+EwE_2020_2J3K_harp_seal_relative_biomass <- (EwE_2020_2J3K_harp_seal_biomass / EwE_2020_2J3K_total_biomass)* 100
+EwE_2020_2J3K_cod_all_relative_biomass <- (EwE_2020_2J3K_cod_all_biomass / EwE_2020_2J3K_total_biomass)* 100
+EwE_2020_2J3K_cod_sup_35_relative_biomass <- (EwE_2020_2J3K_cod_sup_35_biomass / EwE_2020_2J3K_total_biomass)* 100
+EwE_2020_2J3K_cod_inf_35_relative_biomass <- (EwE_2020_2J3K_cod_inf_35_biomass / EwE_2020_2J3K_total_biomass)* 100
+EwE_2020_2J3K_capelin_relative_biomass <- (EwE_2020_2J3K_capelin_biomass / EwE_2020_2J3K_total_biomass)* 100
+
+```
+
+### EwE 2020 South - 3LNO
+
+```{r EwE_2020_3LNO_relative_biomass, echo=TRUE, include=TRUE}
+
+EwE_2020_3LNO_harp_seal_biomass <- 0.4 * 0.652
+EwE_2020_3LNO_cod_all_biomass <- 0.568 + 0.05214892
+EwE_2020_3LNO_cod_sup_35_biomass <- 0.568
+EwE_2020_3LNO_cod_inf_35_biomass <- 0.05214892
+EwE_2020_3LNO_capelin_biomass <- 3.5
+  
+EwE_2020_3LNO_total_biomass <- 259.8602
+  
+EwE_2020_3LNO_harp_seal_relative_biomass <- (EwE_2020_3LNO_harp_seal_biomass / EwE_2020_3LNO_total_biomass)* 100
+EwE_2020_3LNO_cod_all_relative_biomass <- (EwE_2020_3LNO_cod_all_biomass / EwE_2020_3LNO_total_biomass)* 100
+EwE_2020_3LNO_cod_sup_35_relative_biomass <- (EwE_2020_3LNO_cod_sup_35_biomass / EwE_2020_3LNO_total_biomass)* 100
+EwE_2020_3LNO_cod_inf_35_relative_biomass <- (EwE_2020_3LNO_cod_inf_35_biomass / EwE_2020_3LNO_total_biomass)* 100
+EwE_2020_3LNO_capelin_relative_biomass <- (EwE_2020_3LNO_capelin_biomass / EwE_2020_3LNO_total_biomass)* 100
+
+```
+
+# Ecological indicator Summary {.tabset}
+
+## BLANK
+
+Left blank for compact format
+
+## Ecosystem scale : Summary table
+
+```{r Ecosystem_scale_summary_table, include=TRUE}
+
+Ecosystem_scale_summary_table_function()
+
+```
+
+## Ecosystem scale : Percentage change
+
+```{r calcul_percentage_change, include=TRUE}
+
+calcul_percentage_change(Ecosystem_scale_summary_table)
+
+```
+
+## Species scale : Summary table
+
+```{r Species_scale_summary_table, include=TRUE}
+
+Species_scale_summary_table_function()
+
+```
+
+# Ecological indicator Key figures 
+
+## Ecosystem scale {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Summary Plot Ecosystem scale
+
+```{r plot_ecosystem_key_figure, include=TRUE}
+
+plot_ecosystem_key_figure_function()
+
+```
+
+## Species scale {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Plot Species scale
+
+```{r LoD_data_import}
+
+import_all_xlsx_files_LoD_simulation_function("Raw_data_LoD_import")
+
+```
+
+```{r Rank_avg_impact_function}
+
+Rank_avg_impact_function(LoD_select = "LoD_60")
+
+```
+
+### Key #1/RTI figure
+
+```{r Species_scale_summary_table_large, include=FALSE}
+
+Species_scale_summary_table_large_publication()
+
+```
+
+
+```{r KEY1_RTI_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "RTI", 
+                          yaxis = "Key_1", 
+                          xlab = "Relative Total Impact (RTI)", 
+                          ylab = "Keystoneness #1")
+
+```
+
+### Key #2/RTI figure
+
+```{r KEY2_RTI_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "RTI", 
+                          yaxis = "Key_2", 
+                          xlab = "Relative Total Impact (RTI)", 
+                          ylab = "Keystoneness #2")
+
+```
+
+### Key #1 / Key #2 figure 
+
+```{r KEY1_KEY2_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Key_1", 
+                          yaxis = "Key_2", 
+                          xlab = "Keystoneness #1", 
+                          ylab = "Keystoneness #2")
+
+```
+
+### Relative Biomass - Rank figure 
+
+```{r relative_biomass_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Relative_Biomass", 
+                          yaxis = "Rank", 
+                          xlab = "Relative abundance (% of total biomass)", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### Connectance - Rank figure
+
+```{r conectance_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Connectance", 
+                          yaxis = "Rank", 
+                          xlab = "Connectance", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### Key #1 - Rank figure
+
+```{r key1_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Key_1", 
+                          yaxis = "Rank", 
+                          xlab = "Keystoneness #1", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### Key #2 - Rank figure
+
+```{r key2_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Key_2", 
+                          yaxis = "Rank", 
+                          xlab = "Keystoneness #2", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### TL - Rank figure
+
+```{r TL_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "TL", 
+                          yaxis = "Rank", 
+                          xlab = "Trophic Level", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### SURF - Rank figure
+
+```{r SURF_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "SURF", 
+                          yaxis = "Rank", 
+                          xlab = "SURF index", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### OI - Rank figure
+
+```{r OI_rank_plot, include=TRUE}
+
+key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "OI", 
+                          yaxis = "Rank", 
+                          xlab = "Omnivory index", 
+                          ylab = "Rank of largest effect")
+
+```
+
+### Relative Biomass - Average Ecosystem Impact figure
+
+```{r relative_biomass_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Relative_Biomass", 
+                          yaxis = "Avg_impact", 
+                          xlab = "Relative Biomass", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### Connectance - Average Ecosystem Impact figure
+
+```{r connectance_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Connectance", 
+                          yaxis = "Avg_impact", 
+                          xlab = "Connectance", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### Key #1 - Average Ecosystem Impact figure
+
+```{r key1_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Key_1", 
+                          yaxis = "Avg_impact", 
+                          xlab = "Keystoneness #1", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### Key #2 - Average Ecosystem Impact figure
+
+```{r key2_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "Key_2", 
+                          yaxis = "Avg_impact", 
+                          xlab = "Keystoneness #2", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### TL - Average Ecosystem Impact figure
+
+```{r TL_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "TL", 
+                          yaxis = "Avg_impact", 
+                          xlab = "Trophic Level", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### SURF - Average Ecosystem Impact figure
+
+```{r SURF_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "SURF", 
+                          yaxis = "Avg_impact", 
+                          xlab = "SURF index", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### OI - Average Ecosystem Impact figure
+
+```{r OI_avg_eco_impact_plot, include=TRUE}
+
+key_fig_ecol_ind_avg_function(ecol_ind_data = Species_scale_summary_table_large, 
+                          xaxis = "OI", 
+                          yaxis = "Avg_impact", 
+                          xlab = "Omnivory Index", 
+                          ylab = "Avg. ecosystem impact")
+
+```
+
+### Selected multi-panel short 
+
+```{r Selected_multi_panel_short, include=TRUE}
+
+Selected_multi_panel_function(short_or_long = "short")
+
+```
+
+### Selected multi-panel long 
+
+```{r Selected_multi_panel_long, include=TRUE}
+
+Selected_multi_panel_function(short_or_long = "long")
+
+```
+
+

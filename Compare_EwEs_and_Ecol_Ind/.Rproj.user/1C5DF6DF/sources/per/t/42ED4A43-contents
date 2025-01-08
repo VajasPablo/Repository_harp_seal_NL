@@ -1,0 +1,794 @@
+---
+title: "Comparison between EwE period - synthesis report"
+author: "Vajas Pablo"
+date: ' `r Sys.Date()` '
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    number_sections: true
+editor_options: 
+  chunk_output_type: console
+link-citations: true
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+
+knitr::opts_chunk$set(
+    echo = FALSE,
+    include = FALSE,
+    fig.width = 12,
+    fig.height = 8,
+    fig.path = "R_figures_export/",
+    message = FALSE,
+    warning = FALSE,
+    dev = c("png", "pdf")
+)
+
+# options(device = "quartz")
+
+```
+
+```{r package}
+
+install_and_load_packages <- function() {
+  # List of packages to be installed and loaded
+  packages <- c("tidyverse", "gridExtra", "knitr", "writexl", "openxlsx", "here", "scales", "DT", "ggpubr", "patchwork")
+  
+  # Function to install and load a package
+  install_and_load <- function(package_name) {
+    if (!requireNamespace(package_name, quietly = TRUE)) {
+      message(paste("Package", package_name, "is not installed. Installing..."))
+      install.packages(package_name, dependencies = TRUE)
+    }
+    message(paste("Loading package", package_name, "..."))
+    suppressMessages(library(package_name, character.only = TRUE))
+  }
+  
+  # Loop through the list of packages
+  for (pkg_name in packages) {
+    install_and_load(pkg_name)
+  }
+}
+
+# Call the function to install and load packages
+install_and_load_packages()
+
+```
+
+```{r source}
+
+sapply(list.files(here("R_script"), pattern="*.R", full.names=TRUE, ignore.case=TRUE),source,.GlobalEnv)
+
+```
+
+```{r rds_read_all}
+
+read_all_rds()
+
+```
+
+# Data harmonisation 
+
+Here we have (i) harmonised the names of the EwE groups between the different time periods and (ii) added the species not represented in EwE 2020, characterised by NA, in order to obtain tables with the same number of rows and columns.
+
+```{r Data_harmonisation}
+
+summary_monospe_raw_EwE_2020_merged_2J3K_3LNO <- summary_monospe_EwE_2020_merged_2J3K_3LNO
+summary_multispe_raw_seal_cod_EwE_2020_merged_2J3K_3LNO <- summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO
+summary_multispe_raw_seal_capelin_EwE_2020_merged_2J3K_3LNO <- summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO
+
+Data_harmonisation(data = summary_monospe_EwE_2020_merged_2J3K_3LNO, 
+                   name_object = "summary_monospe_EwE_2020_merged_2J3K_3LNO")
+Data_harmonisation(data = summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO, 
+                   name_object = "summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO")
+Data_harmonisation(data = summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                   name_object = "summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO")
+
+```
+
+# Key figures multipanel : Level of Depletion {.tabset}
+
+## BLANK
+
+Left blank for compact format
+
+## Key figure "short"
+
+```{r key_fig_assemblage_short, include=TRUE}
+
+key_fig_assemblage_function(figure_size = "short")
+
+```
+
+## Key figure "EwE 2020"
+
+```{r key_fig_assemblage_EwE_2020, include=TRUE}
+
+key_fig_assemblage_function(figure_size = "EwE_2020")
+
+```
+
+## Key figure "long"
+
+```{r key_fig_assemblage_long, include=TRUE}
+
+key_fig_assemblage_function(figure_size = "long")
+
+```
+
+## Key figure "EwE 2020 sensitivity analysis" short
+
+```{r key_fig_assemblage_EwE_2020_sensitivity_detailled, include=TRUE}
+
+key_fig_assemblage_function(figure_size = "sensitivity_short")
+
+```
+
+## Key figure "EwE 2020 sensitivity analysis" merged
+
+```{r key_fig_assemblage_EwE_2020_sensitivity_merged, include=TRUE}
+
+key_fig_assemblage_function(figure_size = "sensitivity_merged")
+
+```
+
+
+# Key figures alternative multipanel : Level of Depletion {.tabset}
+
+## BLANK
+
+Left blank for compact format
+
+## Key figure "short"
+
+```{r key_fig_assemblage_short_web, include=TRUE}
+
+key_fig_assemblage_function_web(figure_size = "short")
+
+```
+
+## Key figure "EwE 2020"
+
+```{r key_fig_assemblage_EwE_2020_web, include=TRUE}
+
+key_fig_assemblage_function_web(figure_size = "EwE_2020")
+
+```
+
+## Key figure "long"
+
+```{r key_fig_assemblage_long_web, include=TRUE}
+
+key_fig_assemblage_function_web(figure_size = "long")
+
+```
+
+## Key figure "EwE 2020 sensitivity analysis" short
+
+```{r key_fig_assemblage_EwE_2020_sensitivity_detailled_web, include=TRUE}
+
+key_fig_assemblage_function_web(figure_size = "sensitivity_short")
+
+```
+
+## Key figure "EwE 2020 sensitivity analysis" merged
+
+```{r key_fig_assemblage_EwE_2020_sensitivity_merged_web, include=TRUE}
+
+key_fig_assemblage_function_web(figure_size = "sensitivity_merged")
+
+```
+
+# How ecosystems shift 
+
+## Monospecific simulation {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Between 1985 and 2013
+
+```{r compare_heatmap_monospe_1985_2013, include=TRUE}
+
+compare_heatmap_monospe(data_period_1 = summary_monospe_EwE_1985, 
+                        period_1 = "1985",
+                        data_period_2 = summary_monospe_EwE_2013, 
+                        period_2  = "2013")
+
+```
+
+```{r compare_heatmap_monospe_simple_1985_2013, include=TRUE}
+
+compare_heatmap_monospe_simple(data_period_1 = summary_monospe_EwE_1985, 
+                        period_1 = "1985",
+                        data_period_2 = summary_monospe_EwE_2013, 
+                        period_2  = "2013")
+
+```
+
+### Between 1985 and 2020
+
+```{r compare_heatmap_monospe_1985_2020, include=TRUE}
+
+compare_heatmap_monospe(data_period_1 = summary_monospe_EwE_1985, 
+                        period_1 = "1985",
+                        data_period_2 = summary_monospe_EwE_2020_merged_2J3K_3LNO, 
+                        period_2  = "2020")
+
+```
+
+```{r compare_heatmap_monospe_simple_1985_2020, include=TRUE}
+
+compare_heatmap_monospe_simple(data_period_1 = summary_monospe_EwE_1985, 
+                        period_1 = "1985",
+                        data_period_2 = summary_monospe_EwE_2020_merged_2J3K_3LNO, 
+                        period_2  = "2020")
+
+```
+
+### Between 2013 and 2020
+
+```{r compare_heatmap_monospe_2013_2020, include=TRUE}
+
+compare_heatmap_monospe(data_period_1 = summary_monospe_EwE_2013, 
+                        period_1 = "2013",
+                        data_period_2 = summary_monospe_EwE_2020_merged_2J3K_3LNO, 
+                        period_2  = "2020")
+
+```
+
+```{r compare_heatmap_monospe_simple_2013_2020, include=TRUE}
+
+compare_heatmap_monospe_simple(data_period_1 = summary_monospe_EwE_2013, 
+                        period_1 = "2013",
+                        data_period_2 = summary_monospe_EwE_2020_merged_2J3K_3LNO, 
+                        period_2  = "2020")
+
+```
+
+### Between 2020 and 2020 sensitivity
+
+```{r compare_heatmap_monospe_2O20_2020, include=TRUE}
+
+compare_heatmap_monospe(data_period_1 = summary_monospe_raw_EwE_2020_merged_2J3K_3LNO, 
+                        period_1 = "2020",
+                        data_period_2 = summary_monospe_EwE_2020_80_20_merged_2J3K_3LNO, 
+                        period_2  = "2020 Sensitivity")
+
+```
+
+```{r compare_heatmap_monospe_simple_2020_2020, include=TRUE}
+
+compare_heatmap_monospe_simple(data_period_1 = summary_monospe_raw_EwE_2020_merged_2J3K_3LNO, 
+                        period_1 = "2020",
+                        data_period_2 = summary_monospe_EwE_2020_80_20_merged_2J3K_3LNO, 
+                        period_2  = "2020 Sensitivity")
+
+```
+
+## Multispecific simulation Seal - Cod {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Simulation: between 1985 and 2013
+
+```{r compare_heatmap_multispe_1985_2013_seal_cod, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_seal_cod_EwE_1985,
+                        period_1 = "1985",
+                        data_period_2 = summary_multispe_seal_cod_EwE_2013,
+                        period_2  = "2013",
+                        species_facet_wrap = "cod")
+
+```
+
+```{r compare_heatmap_multispe_simple_1985_2013_seal_cod, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_seal_cod_EwE_1985,
+                         period_1 = "1985",
+                         data_period_2 = summary_multispe_seal_cod_EwE_2013,
+                         period_2  = "2013",
+                         species_facet_wrap = "cod")
+
+```
+
+### Simulation: between 1985 and 2020
+
+```{r compare_heatmap_multispe_1985_2020_seal_cod, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_seal_cod_EwE_1985,
+                        period_1 = "1985",
+                        data_period_2 = summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO,
+                        period_2  = "2020",
+                        species_facet_wrap = "cod")
+
+```
+
+```{r compare_heatmap_multispe_simple_1985_2020_seal_cod, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_seal_cod_EwE_1985,
+                         period_1 = "1985",
+                         data_period_2 = summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO,
+                         period_2  = "2020",
+                         species_facet_wrap = "cod")
+
+```
+
+### Simulation: between 2013 and 2020
+
+```{r compare_heatmap_multispe_2013_2020_seal_cod, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_seal_cod_EwE_2013,
+                        period_1 = "2013",
+                        data_period_2 = summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO,
+                        period_2  = "2020",
+                        species_facet_wrap = "cod")
+
+```
+
+```{r compare_heatmap_multispe_simple_2013_2020_seal_cod, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_seal_cod_EwE_2013,
+                         period_1 = "2013",
+                         data_period_2 = summary_multispe_seal_cod_EwE_2020_merged_2J3K_3LNO,
+                         period_2  = "2020",
+                         species_facet_wrap = "cod")
+
+```
+
+### Simulation: between 2020 and 2020 sensitivity
+
+```{r compare_heatmap_multispe_2020_2020_seal_cod, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_raw_seal_cod_EwE_2020_merged_2J3K_3LNO,
+                        period_1 = "2020",
+                        data_period_2 = summary_multispe_seal_cod_EwE_2020_80_20_merged_2J3K_3LNO,
+                        period_2  = "2020 sensitivity",
+                        species_facet_wrap = "cod")
+
+```
+
+```{r compare_heatmap_multispe_simple_2020_2020_seal_cod, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_raw_seal_cod_EwE_2020_merged_2J3K_3LNO,
+                         period_1 = "2020",
+                         data_period_2 = summary_multispe_seal_cod_EwE_2020_80_20_merged_2J3K_3LNO,
+                         period_2  = "2020 sensitivity",
+                         species_facet_wrap = "cod")
+
+```
+
+## Multispecific simulation Seal - Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Simulation: between 1985 and 2013
+
+```{r compare_heatmap_multispe_1985_2013_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_seal_capelin_EwE_1985,
+                        period_1 = "1985",
+                        data_period_2 = summary_multispe_seal_capelin_EwE_2013,
+                        period_2  = "2013",
+                        species_facet_wrap = "capelin")
+
+```
+
+```{r compare_heatmap_multispe_simple_1985_2013_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_seal_capelin_EwE_1985,
+                         period_1 = "1985",
+                         data_period_2 = summary_multispe_seal_capelin_EwE_2013,
+                         period_2  = "2013",
+                         species_facet_wrap = "capelin")
+
+```
+
+### Simulation: between 1985 and 2020
+
+```{r compare_heatmap_multispe_1985_2020_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_seal_capelin_EwE_1985,
+                        period_1 = "1985",
+                        data_period_2 = summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                        period_2  = "2020",
+                        species_facet_wrap = "capelin")
+
+```
+
+```{r compare_heatmap_multispe_simple_1985_2020_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_seal_capelin_EwE_1985,
+                         period_1 = "1985",
+                         data_period_2 = summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                         period_2  = "2020",
+                         species_facet_wrap = "capelin")
+
+```
+
+### Simulation: between 2013 and 2020
+
+```{r compare_heatmap_multispe_2013_2020_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_seal_capelin_EwE_2013,
+                        period_1 = "2013",
+                        data_period_2 = summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                        period_2  = "2020",
+                        species_facet_wrap = "capelin")
+
+```
+
+```{r compare_heatmap_multispe_simple_2013_2020_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_seal_capelin_EwE_2013,
+                         period_1 = "2013",
+                         data_period_2 = summary_multispe_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                         period_2  = "2020",
+                         species_facet_wrap = "capelin")
+
+```
+
+### Simulation: between 2020 and 2020
+
+```{r compare_heatmap_multispe_2020_2020_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe(data_period_1 = summary_multispe_raw_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                        period_1 = "2020",
+                        data_period_2 = summary_multispe_seal_capelin_EwE_2020_80_20_merged_2J3K_3LNO,
+                        period_2  = "2020 sensitivity",
+                        species_facet_wrap = "capelin")
+
+```
+
+```{r compare_heatmap_multispe_simple_2020_2020_seal_capelin, include=TRUE}
+
+compare_heatmap_multispe_simple(data_period_1 = summary_multispe_raw_seal_capelin_EwE_2020_merged_2J3K_3LNO,
+                         period_1 = "2020",
+                         data_period_2 = summary_multispe_seal_capelin_EwE_2020_80_20_merged_2J3K_3LNO,
+                         period_2  = "2020 sensitivity",
+                         species_facet_wrap = "capelin")
+
+```
+
+# Cod & Capelin Level of Restoration from EwE 1985 biomass on EwE 2020 ecosystem simulations
+
+## Level of Restoration Cod and Capelin {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod 
+
+```{r key_assemable_LoR_figure_bcod, include=TRUE}
+
+key_fig_assemblage_function_LoR(species = "cod")
+
+```
+
+### Cod sensitivity
+
+```{r key_assemable_LoR_figure_bcod_sensitivity, include=TRUE}
+
+key_fig_assemblage_function_LoR(species = "cod_sensitivity")
+
+```
+
+### Capelin
+
+```{r key_assemable_LoR_figure_bcapelin, include=TRUE}
+
+key_fig_assemblage_function_LoR(species = "capelin")
+
+```
+
+### Capelin sensitivity
+
+```{r key_assemable_LoR_figure_bcapelin_sensitivity, include=TRUE}
+
+key_fig_assemblage_function_LoR(species = "capelin_sensitivity")
+
+```
+
+## Compare : Cod & Capelin 100% of Level of Restoration on EwE 1985 biomass value {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### compare figure 
+
+```{r heatmap_LoR_compare_to_obs, include=TRUE}
+
+heatmap_LoR_compare_to_obs()
+
+```
+
+# Harp seal, cod and capelin LoD trends under different LoD simulation combination 
+
+## Harp seal x cod heatmap : Harp seal % growth {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal % growth
+
+```{r key_assemable_sealxcodxseal, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod(species = "seal") 
+
+```
+
+### Harp seal % growth - sensitivity
+
+```{r key_assemable_sealxcodxseal_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod(species = "seal_sensitivity")
+
+```
+
+## Harp seal x cod heatmap : Cod % growth {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod % growth
+
+```{r key_assemable_sealxcodxcod, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod(species = "cod")
+
+```
+
+### Cod % growth - sensitivity
+
+```{r key_assemable_sealxcodxcod_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod(species = "cod_sensitivity")
+
+```
+
+## Harp seal x cod heatmap : Cod historical restoration {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod historical restoration
+
+```{r key_assemable_sealxcodxcod_resto, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod_resto()
+
+```
+
+### Cod historical restoration sensitivity
+
+```{r key_assemable_sealxcodxcod_resto_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod_resto_sensitivity()
+
+```
+
+## Harp seal x cod heatmap : Capelin % growth {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Capelin % growth 
+
+```{r key_assemable_sealxcodxcapelin, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod(species = "capelin")
+
+```
+
+### Capelin % growth sensitivity
+
+```{r key_assemable_sealxcodxcapelin_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod(species = "capelin_sensitivity")
+
+```
+
+## Harp seal x capelin heatmap : Harp seal % growth {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Harp seal % growth
+
+```{r key_assemable_sealxcapelinxseal, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin(species = "seal")
+
+```
+
+### Harp seal % growth sensitivity
+
+```{r key_assemable_sealxcapelinxseal_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin(species = "seal_sensitivity")
+
+```
+
+## Harp seal x capelin heatmap : Cod % growth {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod % growth
+
+```{r key_assemable_sealxcapelinxcod, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin(species = "cod")
+
+```
+
+### Cod % growth sensitivity
+
+```{r key_assemable_sealxcapelinxcod_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin(species = "cod_sensitivity")
+
+```
+
+## Harp seal x capelin heatmap : Cod historical restoration {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Cod historical restoration
+
+```{r key_assemable_sealxcaplinxcod_resto, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin_resto()
+
+```
+
+### Cod historical restoration sensitivity
+
+```{r key_assemable_sealxcaplinxcod_resto_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin_resto_sensitivity()
+
+```
+
+## Harp seal x capelin heatmap : Capelin % growth {.tabset}
+
+### BLANK
+
+Left blank for compact format
+
+### Capelin % growth
+
+```{r key_assemable_sealxcapelinxcapelin, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin(species = "capelin")
+
+```
+
+### Capelin % growth sensitivity
+
+```{r key_assemable_sealxcapelinxcapelin_sensitivity, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_capelin(species = "capelin_sensitivity")
+
+```
+
+# Harp Seal Population Projection {.tabset}
+
+## BLANK
+
+Left blank for compact format
+
+## Level of Restoration Cod x Capelin on Harp seal population
+
+```{r assemblage_function_LoR_seal, include=TRUE}
+
+fig_assemblage_function_LoR()
+
+# + CUSTOM CETTE FIGURE POUR AVOIR LA TENDANCE RELATIVE DE HARP SEAL/CAPELIN ET COD/HARP SEAL ??
+# NAN c'est déjà dans la figure de fin
+# --> ICI peut être on pourrait remplacer Harp Seal Growth par Cod Growth ? en plus
+
+```
+
+## Harp seal trends projection 
+
+```{r assemblage_function_MSE, include=TRUE}
+
+fig_assemblage_function_MSE()
+
+```
+
+# Cod - Biomass and Cacth {.tabset}
+
+## BLANK
+
+Left blank for compact format
+
+## Cod Biomass
+
+```{r cod_biomass_LoD_LoR, include=TRUE}
+
+buble_plot_function_LoD(species = "Harp seal", data_output = "biomass", plot_type = "second")
+buble_plot_function_LoD(species = "Capelin", data_output = "biomass", plot_type = "second")
+
+buble_plot_function_LoR(species = "Capelin", data_output = "biomass", plot_type = "second")
+
+```
+
+## Cod Catch {.tabset}
+
+```{r cod_catch_LoD_LoR, include=TRUE}
+
+buble_plot_function_LoD(species = "Harp seal", data_output = "catch", plot_type = "second")
+buble_plot_function_LoD(species = "Capelin", data_output = "catch", plot_type = "second")
+
+buble_plot_function_LoR(species = "Capelin", data_output = "catch", plot_type = "second")
+
+```
+
+# Selected figures 
+
+## Introductive figures
+
+```{r introductive_figure_prop_change_map, include=TRUE}
+
+#introductive_figure()
+#introductive_map()
+
+introductive_map_rb_figure()
+
+```
+
+## LoD Key figure
+
+```{r key_fig_assemblage_short_web_ajust, include=TRUE}
+
+key_fig_assemblage_function_web_ajust()
+
+```
+
+## LoR Key figure
+
+```{r key_fig_assemblage_lor_short_web_ajust, include=TRUE}
+
+key_fig_assemblage_function_LoR_ajust()
+
+```
+
+## Cod focus key figure
+
+```{r fig_assemblage_function_heatmap_seal_cod_capelin_EFBM, include=TRUE}
+
+fig_assemblage_function_heatmap_seal_cod_capelin_EFBM()
+
+```
+
+```{r Cod_trends_LoR_capelin_function, include=TRUE}
+
+Cod_trends_LoR_capelin_function()
+
+```
+
+## Harp seal focus key figure
+
+```{r assemblage_function_MSE_ajust, include=TRUE}
+
+fig_assemblage_function_MSE_ajust()
+
+```
