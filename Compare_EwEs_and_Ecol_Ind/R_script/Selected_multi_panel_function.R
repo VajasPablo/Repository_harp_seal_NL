@@ -12,7 +12,7 @@ Selected_multi_panel_function <- function(short_or_long) {
                                              xaxis = "RTI", 
                                              yaxis = "Key_2", 
                                              xlab = "Relative Total Impact", 
-                                             ylab = "Keystoneness #2") + ggtitle("a)")
+                                             ylab = "Keystoneness") + ggtitle("a)")
   
   rank_ra <- key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
                                             xaxis = "Relative_Biomass", 
@@ -23,7 +23,7 @@ Selected_multi_panel_function <- function(short_or_long) {
   rank_key2 <- key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
                                               xaxis = "Key_2", 
                                               yaxis = "Rank", 
-                                              xlab = "Keystoneness #2", 
+                                              xlab = "Keystoneness", 
                                               ylab = "Rank of largest effect") + ggtitle("c)")
   
   rank_surf <- key_fig_ecol_ind_rank_function(ecol_ind_data = Species_scale_summary_table_large, 
@@ -44,14 +44,25 @@ Selected_multi_panel_function <- function(short_or_long) {
                                             xlab = "SURF index", 
                                             ylab = "Avg. ecosystem impact") + ggtitle("f)")
   
-  combined_plot_short <- (key2_rti + rank_ra +
-                            rank_key2 + rank_surf) + 
-    plot_layout(ncol = 2, guides = "collect")
   
-  combined_plot_long <- (key2_rti + rank_ra +
-                           rank_key2 + rank_surf +
-                           avg_rb + avg_surf) + 
-    plot_layout(ncol = 2, guides = "collect")
+  
+  combined_plot_short <- (
+    key2_rti + rank_ra + rank_key2 + rank_surf
+  ) +
+    plot_layout(ncol = 2, guides = "collect") & 
+    guides(
+      shape  = guide_legend(order = 1, title = "Species"),
+      colour = guide_legend(order = 2, title = "Periods-Areas")
+    )
+  
+  combined_plot_long <- (
+    key2_rti + rank_ra + rank_key2 + rank_surf + avg_rb + avg_surf
+  ) +
+    plot_layout(ncol = 2, guides = "collect") & 
+    guides(
+      shape  = guide_legend(order = 1, title = "Species"),
+      colour = guide_legend(order = 2, title = "Periods-Areas")
+    )
   
   # Utilisation de if/else pour retourner le bon graphique
   if (short_or_long == "short") {
